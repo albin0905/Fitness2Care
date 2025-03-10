@@ -8,10 +8,10 @@ import lombok.*;
 @NoArgsConstructor
 @RequiredArgsConstructor
 @Entity
-public class User {
+public class Member {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer userId;
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    private Integer memberId;
     @NonNull
     @Column(nullable = false)
     private String firstName;

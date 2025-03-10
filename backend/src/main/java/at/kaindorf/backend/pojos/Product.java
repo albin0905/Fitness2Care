@@ -24,6 +24,7 @@ public class Product {
     @Column(nullable = false)
     private String originCountry;
     @NonNull
-    @Column(nullable = false)
-    private String nutrition;
+    @Column(columnDefinition = "TEXT")
+    private String ingredients;
+
 }

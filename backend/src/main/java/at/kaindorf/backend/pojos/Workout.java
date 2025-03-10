@@ -13,6 +13,7 @@ import java.util.List;
 @Entity
 public class Workout {
     @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Integer workoutId;
     @NonNull
     @Column(nullable = false)
