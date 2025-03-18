@@ -15,7 +15,7 @@ public class Product {
     @Id
     private Long barcode;
     @NonNull
-    @Column(nullable = false)
+    @Column(columnDefinition = "TEXT")
     private String productName;
     @NonNull
     @Column(nullable = false)
@@ -26,5 +26,4 @@ public class Product {
     @NonNull
     @Column(columnDefinition = "TEXT")
     private String ingredients;
-
 }
