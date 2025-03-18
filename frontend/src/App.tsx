@@ -1,26 +1,35 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import {BrowserRouter, Route, Routes} from "react-router-dom";
+import Layout from "./_views/layout/Layout";
+import Dashboard from "./_views/dashboard/Dashboard";
+import "bootstrap/dist/css/bootstrap.css"
+import {MemberProvider} from "./_common/context/MemberContext";
+import Workout from "./_views/workout/Workout";
+import Login from "./_views/login/Login";
+import Progress from "./_views/progress/Progress";
+import Goal from "./_views/goal/Goal";
+import CalorieTracker from "./_views/calorietracker/CalorieTracker";
+import UserAccount from "./_views/account/UserAccount";
+import {LanguageProvider} from "./_common/context/LanguageContext";
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Test
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+  <LanguageProvider>
+    <MemberProvider>
+      <BrowserRouter>
+        <Routes>
+            <Route path="/" element={<Login/>}/>
+          <Route path="/" element={<Layout/>}>
+              <Route path="/dashboard" element={<Dashboard/>}/>
+              <Route path="/workout" element={<Workout/>}/>
+              <Route path="/progress" element={<Progress/>}/>
+              <Route path="/goal" element={<Goal/>}/>
+              <Route path="/calorietracker" element={<CalorieTracker/>}/>
+              <Route path="/account" element={<UserAccount/>}/>
+          </Route>
+        </Routes>
+      </BrowserRouter>
+    </MemberProvider>
+  </LanguageProvider>
   );
 }
 
