@@ -1,12 +1,18 @@
 package at.kaindorf.backend.database;
 
+import at.kaindorf.backend.pojos.Exercice;
+import at.kaindorf.backend.pojos.Member;
 import at.kaindorf.backend.pojos.Product;
+import at.kaindorf.backend.pojos.Workout;
+import at.kaindorf.backend.repositorys.MemberRepository;
 import at.kaindorf.backend.repositorys.ProductRepository;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.ApplicationArguments;
+import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
@@ -17,19 +23,17 @@ import java.util.concurrent.TimeUnit;
 @Component
 @Slf4j
 @RequiredArgsConstructor
-public class initDatabase {
+public class initDatabase implements ApplicationRunner {
     private static final String API_URL = "https://world.openfoodfacts.org/cgi/search.pl?search_terms=&search_simple=1&action=process&json=1&page_size=1000&page=";
     List<Product> productList = new ArrayList<>();
 
     private final ProductRepository productRepository;
+    private final MemberRepository memberRepository;
 
-    // 990 Seiten
-
-    @PostConstruct
-    public void importData(){
+    public void importProductData(){
         RestTemplate restTemplate = new RestTemplate();
         ObjectMapper objectMapper = new ObjectMapper();
-        int page = 1;
+        int page = 990;
         int requestCount = 0;
 
         try {
@@ -80,5 +84,34 @@ public class initDatabase {
         } catch (Exception e) {
             log.error("Error during data import", e);
         }
+    }
+
+    public void importMembers(){
+        Member member1 = new Member();
+        member1.setFirstName("David");
+        member1.setLastName("Fink");
+        member1.setEmail("findaa21@htl-kaindorf.at");
+        member1.setPassword("1234");
+        member1.setPhone("+43 676 3075989");
+        member1.setWeight(90);
+
+        Member member2 = new Member();
+        member2.setFirstName("Albin");
+        member2.setLastName("Bajrami");
+        member2.setEmail("bajala21@htl-kaindorf.at");
+        member2.setPassword("1234");
+        member2.setPhone("+43 676 9289502");
+        member2.setWeight(75);
+
+        List<Member> members = new ArrayList<>();
+        members.add(member1);
+        members.add(member2);
+
+        memberRepository.saveAll(members);
+    }
+
+        @Override
+    public void run(ApplicationArguments args) throws Exception {
+
     }
 }

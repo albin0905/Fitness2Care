@@ -11,23 +11,13 @@ const Login = () => {
 
     const handleLogin = async () => {
         try {
-            const response = await axios.post("http://localhost:5000/api/login", {
-                email,
-                password,
+            const response = await axios.get("http://localhost:8080/member/login", {
+                params: { email, password },
             });
             console.log("Login erfolgreich:", response.data);
             navigate("/dashboard");
         } catch (err) {
             setError("Falsche Anmeldeinformationen");
-        }
-    };
-
-    const handleDummyLogin = () => {
-        if (email === "test@example.com" && password === "password123") {
-            console.log("Dummy-Login erfolgreich");
-            navigate("/dashboard");
-        } else {
-            setError("Falsche Dummy-Daten");
         }
     };
 
@@ -43,7 +33,7 @@ const Login = () => {
                         className="form-control"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        onKeyDown={(e) => e.key === "Enter" && handleDummyLogin()} // Login mit Enter nach Passwort-Eingabe
+                        onKeyDown={(e) => e.key === "Enter" && handleLogin()} // Login mit Enter nach Passwort-Eingabe
                         required
                     />
                 </div>
@@ -54,11 +44,11 @@ const Login = () => {
                         className="form-control"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
-                        onKeyDown={(e) => e.key === "Enter" && handleDummyLogin()} // Login mit Enter nach Passwort-Eingabe
+                        onKeyDown={(e) => e.key === "Enter" && handleLogin()} // Login mit Enter nach Passwort-Eingabe
                         required
                     />
                 </div>
-                <button className="btn btn-secondary w-100" onClick={handleDummyLogin}>
+                <button className="btn btn-secondary w-100" onClick={handleLogin}>
                     Login mit Dummy-Daten
                 </button>
             </div>
