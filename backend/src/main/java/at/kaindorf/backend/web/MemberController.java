@@ -35,7 +35,7 @@ public class MemberController {
         return ResponseEntity.ok(member);
     }
 
-    @PostMapping
+    @PostMapping("/register")
     public ResponseEntity<Member> register(
             @RequestBody Member member
     ) {
