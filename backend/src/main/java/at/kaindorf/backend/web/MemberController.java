@@ -53,4 +53,26 @@ public class MemberController {
 
         return ResponseEntity.status(HttpStatus.CONFLICT).build();
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Member> updateMember(
+            @PathVariable Integer id,
+            @RequestBody Member member
+    ){
+        log.info("PUT: Anmeldedaten aktualisiert");
+
+        return memberRepository.findById(id)
+                .map(existingMember -> {
+                    existingMember.setFirstName(member.getFirstName());
+                    existingMember.setLastName(member.getLastName());
+                    existingMember.setEmail(member.getEmail());
+                    existingMember.setPhone(member.getPhone());
+                    existingMember.setWeight(member.getWeight());
+                    existingMember.setPassword(member.getPassword());
+
+                    Member updatedMember = memberRepository.save(existingMember);
+                    return ResponseEntity.ok(updatedMember);
+                })
+                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+    }
 }
