@@ -110,7 +110,7 @@ public class initDatabase implements ApplicationRunner {
         memberRepository.saveAll(members);
     }
 
-        @Override
+    @Override
     public void run(ApplicationArguments args) throws Exception {
 
     }
