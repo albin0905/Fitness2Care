@@ -49,7 +49,7 @@ const Login = () => {
                     />
                 </div>
                 <button className="btn btn-secondary w-100" onClick={handleLogin}>
-                    Login mit Dummy-Daten
+                    Login
                 </button>
             </div>
         </div>
