@@ -5,8 +5,14 @@ import at.kaindorf.backend.pojos.Workout;
 import at.kaindorf.backend.repositorys.WorkoutRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.jdbc.Work;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import java.net.URI;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/workout")
@@ -42,5 +48,25 @@ public class WorkoutController {
         }
 
         return ResponseEntity.ok(workout);
+    }
+
+    @PostMapping("/addWorkout")
+    public ResponseEntity<Workout> addWorkout(
+            @RequestBody Workout workout
+    ) {
+
+        Optional<Workout> newWorkout = Optional.of(workoutRepository.save(workout));
+
+        if(newWorkout.isPresent()){
+            URI location = ServletUriComponentsBuilder
+                    .fromCurrentRequest()
+                    .path("/{id}")
+                    .buildAndExpand(newWorkout.get().getWorkoutId())
+                    .toUri();
+
+            return ResponseEntity.created(location).body(newWorkout.get());
+        }
+
+        return ResponseEntity.status(HttpStatus.CONFLICT).build();
     }
 }

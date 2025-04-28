@@ -6,14 +6,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
-import java.util.Comparator;
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/member")
@@ -22,26 +20,32 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class MemberController {
     private final MemberRepository memberRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @GetMapping("/login")
     public ResponseEntity<Member> login(
             @RequestParam(name = "email", required = true) String email,
             @RequestParam(name = "password", required = true) String password
     ){
-        log.info("Member " + email + " hat sich eingeloggt");
+        log.info("Member " + email + " versucht sich einzuloggen");
 
-        Member member = memberRepository.login(email, password);
-
-        return ResponseEntity.ok(member);
+        Member member = memberRepository.findByEmail(email);
+        if (member != null && passwordEncoder.matches(password, member.getPassword())) {
+            return ResponseEntity.ok(member);
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
     }
 
     @PostMapping("/register")
     public ResponseEntity<Member> register(
             @RequestBody Member member
     ) {
+        member.setPassword(passwordEncoder.encode(member.getPassword()));
+
         Optional<Member> newMember = Optional.of(memberRepository.save(member));
 
-        if(newMember.isPresent()){
+        if (newMember.isPresent()) {
             URI location = ServletUriComponentsBuilder
                     .fromCurrentRequest()
                     .path("/{id}")
@@ -68,7 +72,10 @@ public class MemberController {
                     existingMember.setEmail(member.getEmail());
                     existingMember.setPhone(member.getPhone());
                     existingMember.setWeight(member.getWeight());
-                    existingMember.setPassword(member.getPassword());
+
+                    if (member.getPassword() != null && !member.getPassword().isEmpty()) {
+                        existingMember.setPassword(passwordEncoder.encode(member.getPassword()));
+                    }
 
                     Member updatedMember = memberRepository.save(existingMember);
                     return ResponseEntity.ok(updatedMember);
