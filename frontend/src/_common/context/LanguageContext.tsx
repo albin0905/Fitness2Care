@@ -1,6 +1,6 @@
-import {createContext, useState, ReactNode, useContext} from 'react';
+import { createContext, useState, ReactNode, useContext } from 'react';
 
-type Language = 'de' | 'en' | 'al';
+type Language = 'de' | 'en';
 interface LanguageContextType {
     language: Language;
     texts: typeof texts['de'];
@@ -9,10 +9,28 @@ interface LanguageContextType {
 
 const texts = {
     de: {
-        settings: 'Einstellungen'
+        settings: 'Einstellungen',
+        dashboard: 'Startseite',
+        workout: 'Workout',
+        progress: 'Fortschritt',
+        goal: 'Ziel',
+        calorieTracker: 'Kalorientracker',
+        account: 'Konto',
+        logout: 'Abmelden',
+        german: 'Deutsch',
+        english: 'Englisch'
     },
     en: {
-        settings:'Settings'
+        settings: 'Settings',
+        dashboard: 'Dashboard',
+        workout: 'Workout',
+        progress: 'Progress',
+        goal: 'Goal',
+        calorieTracker: 'Calorie Tracker',
+        account: 'Account',
+        logout: 'Logout',
+        german: 'German',
+        english: 'English'
     }
 };
 
@@ -21,10 +39,11 @@ export const LanguageContext = createContext<LanguageContextType | undefined>(un
 export const LanguageProvider = ({ children }: { children: ReactNode }) => {
     const [language, setLanguage] = useState<Language>('de');
 
-    // @ts-ignore
-    return <LanguageContext.Provider value={{language, texts: texts[language], setLanguage}}>
-        {children}
-    </LanguageContext.Provider>;
+    return (
+        <LanguageContext.Provider value={{ language, texts: texts[language], setLanguage }}>
+            {children}
+        </LanguageContext.Provider>
+    );
 };
 
 export const useLanguage = () => {
