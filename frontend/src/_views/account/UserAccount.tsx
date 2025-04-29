@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useMemberContext } from "../../_common/context/MemberContext";
+import axios from "axios";
 
 const UserAccount = () => {
     const { member, setMember } = useMemberContext();
@@ -9,21 +10,49 @@ const UserAccount = () => {
         lastName: member?.lastName || "",
         email: member?.email || "",
         phone: member?.phone || 0,
-        weight: member?.weight || 0
+        weight: member?.weight || 0,
+        password: member?.phone || "",
     });
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
-    const handleSave = () => {
+    const handleSave = async () => {
         if (!member) return;
 
-        setMember({
-            id: member.id, // Sicherstellen, dass ID bleibt
-            password: member.password, // Falls notwendig
-            ...formData
-        });
+        const updatedMember = {
+            memberId: member.memberId, // wichtig: memberId, nicht id!
+            ...formData,
+        };
+
+        console.log("Updated member:", updatedMember);
+
+        try {
+            const response = await axios.put(
+                `http://localhost:8080/member/${member.memberId}`,
+                updatedMember,
+                {
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                }
+            );
+
+            setMember(response.data);
+            alert("Daten erfolgreich gespeichert!");
+        } catch (error: any) {
+            if (error.response) {
+                console.error("Fehler vom Server:", error.response.data);
+                alert("Fehler vom Server: " + JSON.stringify(error.response.data));
+            } else if (error.request) {
+                console.error("Keine Antwort:", error.request);
+                alert("Keine Antwort vom Server erhalten.");
+            } else {
+                console.error("Unbekannter Fehler:", error.message);
+                alert("Fehler: " + error.message);
+            }
+        }
     };
 
     return (
@@ -53,6 +82,11 @@ const UserAccount = () => {
                 <div className="mb-3">
                     <label className="form-label">Gewicht</label>
                     <input type="number" name="weight" className="form-control" value={formData.weight} onChange={handleChange} />
+                </div>
+
+                <div className="mb-3">
+                    <label className="form-label">Passwort ändern</label>
+                    <input type="password" name="password" className="form-control" value={formData.password} onChange={handleChange} />
                 </div>
 
                 <button type="button" className="btn btn-primary" onClick={handleSave}>Speichern</button>

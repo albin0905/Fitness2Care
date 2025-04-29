@@ -51,7 +51,7 @@ const Login = () => {
                 phone: form.phone,
                 weight: parseInt(form.weight, 10),
             });
-            console.log("Registrierung erfolgreich:", response.data);
+            console.log("Registrierung erfolgreich:", response.data); // 👈 hier prüfen: ist `phone` enthalten?
             setMember(response.data);
             navigate("/dashboard");
         } catch (err) {
