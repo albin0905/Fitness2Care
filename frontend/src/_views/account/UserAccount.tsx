@@ -76,7 +76,7 @@ const UserAccount = () => {
 
                 <div className="mb-3">
                     <label className="form-label">Telefon</label>
-                    <input type="number" name="phone" className="form-control" value={formData.phone} onChange={handleChange} />
+                    <input name="phone" className="form-control" value={formData.phone} onChange={handleChange} />
                 </div>
 
                 <div className="mb-3">
