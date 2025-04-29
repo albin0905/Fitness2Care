@@ -18,7 +18,12 @@ public class Workout {
     @NonNull
     @Column(nullable = false)
     private Integer time;
-    @OneToMany(mappedBy = "workout", cascade = CascadeType.ALL)
+    @ManyToMany
+    @JoinTable(
+            name = "workout_exercice",
+            joinColumns = @JoinColumn(name = "workout_id"),
+            inverseJoinColumns = @JoinColumn(name = "exercise_id")
+    )
     private List<Exercice> exercices = new ArrayList<>();
     @NonNull
     @Column(nullable = false)

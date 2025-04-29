@@ -3,6 +3,9 @@ package at.kaindorf.backend.pojos;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -17,6 +20,7 @@ public class Exercice {
     private String exerciseName;
     @NonNull
     @Column(nullable = false)
+    @Enumerated(value = EnumType.STRING)
     private ExerciseLevel exerciceLevel;
     @NonNull
     @Column(nullable = false)
@@ -24,8 +28,7 @@ public class Exercice {
     @NonNull
     @Column(nullable = false)
     private String imageURL;
-    @ManyToOne
-    @JoinColumn(name = "workout_id")
+    @ManyToMany(mappedBy = "exercices")
     @ToString.Exclude
-    private Workout workout;
+    private List<Workout> workouts = new ArrayList<>();
 }
