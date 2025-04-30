@@ -20,7 +20,7 @@ import java.util.Optional;
 @Slf4j
 @RequiredArgsConstructor
 public class WorkoutController {
-    WorkoutRepository workoutRepository;
+    private final WorkoutRepository workoutRepository;
 
     @GetMapping("/workouts")
     public ResponseEntity<Workout> workouts(){
@@ -68,5 +68,39 @@ public class WorkoutController {
         }
 
         return ResponseEntity.status(HttpStatus.CONFLICT).build();
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Workout> updateWorkout(
+            @PathVariable Integer id,
+            @RequestBody Workout workout
+    ){
+        log.info("PUT: Workout mit der ID " + id +  " wird aktualisiert");
+
+        return workoutRepository.findById(id)
+                .map(existingWorkout -> {
+                    existingWorkout.setTime(workout.getTime());
+                    existingWorkout.setExercices(workout.getExercices());
+                    existingWorkout.setWorkoutName(workout.getWorkoutName());
+                    existingWorkout.setKcal(workout.getKcal());
+
+                    Workout updatedWorkout = workoutRepository.save(existingWorkout);
+                    return ResponseEntity.ok(updatedWorkout);
+                })
+                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteWorkout(
+            @PathVariable Integer id)
+    {
+        if (workoutRepository.existsById(id)) {
+            workoutRepository.deleteById(id);
+            log.info("Workout mit der ID " + id + " wurde gelöscht.");
+            return ResponseEntity.noContent().build();
+        } else {
+            log.error("Workout mit der ID " + id + " wurde nicht gefunden.");
+            return ResponseEntity.notFound().build();
+        }
     }
 }

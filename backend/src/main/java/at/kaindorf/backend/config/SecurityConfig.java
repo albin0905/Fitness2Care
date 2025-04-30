@@ -28,6 +28,7 @@ public class SecurityConfig {
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/member/**").permitAll()
+                        .requestMatchers("/workout/**").permitAll()
                         .anyRequest().authenticated()
                 );
 
