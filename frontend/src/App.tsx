@@ -10,11 +10,14 @@ import Goal from "./_views/goal/Goal";
 import CalorieTracker from "./_views/calorietracker/CalorieTracker";
 import UserAccount from "./_views/account/UserAccount";
 import {LanguageProvider} from "./_common/context/LanguageContext";
+import {WorkoutProvider} from "./_common/context/WorkoutContext";
+import Exercise from "./_views/exercise/Exercise";
 
 function App() {
   return (
   <LanguageProvider>
-    <MemberProvider>
+     <WorkoutProvider>
+      <MemberProvider>
       <BrowserRouter>
         <Routes>
             <Route path="/" element={<Login/>}/>
@@ -25,10 +28,12 @@ function App() {
               <Route path="/goal" element={<Goal/>}/>
               <Route path="/calorietracker" element={<CalorieTracker/>}/>
               <Route path="/account" element={<UserAccount/>}/>
+              <Route path="/exercise" element={<Exercise/>}/>
           </Route>
         </Routes>
       </BrowserRouter>
     </MemberProvider>
+     </WorkoutProvider>
   </LanguageProvider>
   );
 }

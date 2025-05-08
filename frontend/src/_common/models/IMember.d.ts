@@ -4,6 +4,6 @@ interface IMember {
     lastName: string,
     email: string,
     password: string,
-    phone: number,
+    phone: string,
     weight: number,
 }

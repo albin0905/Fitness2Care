@@ -1,5 +1,5 @@
 interface IExercise{
-    id:number,
+    exerciseId:number,
     exerciseName:string,
     exerciseLevel:string,
     bodyPart: string,

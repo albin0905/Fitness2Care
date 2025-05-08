@@ -1,5 +1,5 @@
 interface IWorkout{
-    id:number,
+    workoutId:number,
     time:number,
     exercises: IExercise[],
     workoutName: string,

@@ -1,5 +1,6 @@
 package at.kaindorf.backend.pojos;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -30,5 +31,6 @@ public class Exercice {
     private String imageURL;
     @ManyToMany(mappedBy = "exercices")
     @ToString.Exclude
+    @JsonIgnore
     private List<Workout> workouts = new ArrayList<>();
 }

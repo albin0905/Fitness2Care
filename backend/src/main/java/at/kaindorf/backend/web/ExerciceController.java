@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -22,8 +23,8 @@ public class ExerciceController {
     private final ExerciceRepository exerciceRepository;
 
     @GetMapping("/exercices")
-    public ResponseEntity<Exercice> exercice(){
-        Exercice exercices = exerciceRepository.getExercice();
+    public ResponseEntity<List<Exercice>> exercice(){
+        List<Exercice> exercices = exerciceRepository.getExercice();
 
         if(exercices != null){
             log.info("Alle vorhandenen Exercices werden angezeigt");
