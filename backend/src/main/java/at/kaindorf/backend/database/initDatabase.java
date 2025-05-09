@@ -1,14 +1,11 @@
 package at.kaindorf.backend.database;
 
-import at.kaindorf.backend.pojos.Exercice;
 import at.kaindorf.backend.pojos.Member;
 import at.kaindorf.backend.pojos.Product;
-import at.kaindorf.backend.pojos.Workout;
 import at.kaindorf.backend.repositorys.MemberRepository;
 import at.kaindorf.backend.repositorys.ProductRepository;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.ApplicationArguments;
@@ -18,7 +15,6 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 @Component

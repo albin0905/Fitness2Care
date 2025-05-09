@@ -20,15 +20,15 @@ public class Workout {
     private Integer time;
     @ManyToMany
     @JoinTable(
-            name = "workout_exercice",
+            name = "workout_exercise",
             joinColumns = @JoinColumn(name = "workout_id"),
             inverseJoinColumns = @JoinColumn(name = "exercise_id")
     )
-    private List<Exercice> exercices = new ArrayList<>();
+    private List<Exercise> exercises = new ArrayList<>();
     @NonNull
     @Column(nullable = false)
     private String workoutName;
     @NonNull
     @Column(nullable = false)
-    private String kcal;
+    private String description;
 }

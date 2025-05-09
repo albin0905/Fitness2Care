@@ -12,7 +12,7 @@ import java.util.List;
 @NoArgsConstructor
 @RequiredArgsConstructor
 @Entity
-public class Exercice {
+public class Exercise {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Integer exerciseId;
@@ -22,14 +22,20 @@ public class Exercice {
     @NonNull
     @Column(nullable = false)
     @Enumerated(value = EnumType.STRING)
-    private ExerciseLevel exerciceLevel;
+    private ExerciseLevel exerciseLevel;
     @NonNull
     @Column(nullable = false)
     private String bodyPart;
     @NonNull
     @Column(nullable = false)
     private String imageURL;
-    @ManyToMany(mappedBy = "exercices")
+    @NonNull
+    @Column(nullable = false)
+    private Integer kcal;
+    @NonNull
+    @Column(nullable = false)
+    private String description;
+    @ManyToMany(mappedBy = "exercises")
     @ToString.Exclude
     @JsonIgnore
     private List<Workout> workouts = new ArrayList<>();

@@ -1,11 +1,9 @@
 package at.kaindorf.backend.web;
 
-import at.kaindorf.backend.pojos.Member;
 import at.kaindorf.backend.pojos.Workout;
 import at.kaindorf.backend.repositorys.WorkoutRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.jdbc.Work;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -84,9 +82,9 @@ public class WorkoutController {
         return workoutRepository.findById(id)
                 .map(existingWorkout -> {
                     existingWorkout.setTime(workout.getTime());
-                    existingWorkout.setExercices(workout.getExercices());
+                    existingWorkout.setExercises(workout.getExercises());
                     existingWorkout.setWorkoutName(workout.getWorkoutName());
-                    existingWorkout.setKcal(workout.getKcal());
+                    existingWorkout.setDescription(workout.getDescription());
 
                     Workout updatedWorkout = workoutRepository.save(existingWorkout);
                     return ResponseEntity.ok(updatedWorkout);
