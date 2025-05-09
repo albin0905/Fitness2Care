@@ -14,6 +14,9 @@ interface IExercise {
 const Exercise = () => {
     const [exercises, setExercises] = useState<IExercise[]>([]);
     const [showModal, setShowModal] = useState(false);
+    const [showDetail, setShowDetail] = useState(false);
+    const [detailExercise, setDetailExercise] = useState<IExercise | null>(null);
+
     const [newExercise, setNewExercise] = useState<Omit<IExercise, 'exerciseId'>>({
         exerciseName: '',
         exerciceLevel: '',
@@ -96,6 +99,16 @@ const Exercise = () => {
         setNewExercise({ exerciseName: '', exerciceLevel: '', bodyPart: '', imageURL: '' });
     };
 
+    const handleShowDetail = (exercise: IExercise) => {
+        setDetailExercise(exercise);
+        setShowDetail(true);
+    };
+
+    const closeDetail = () => {
+        setShowDetail(false);
+        setDetailExercise(null);
+    };
+
     return (
         <div className="container-fluid p-4">
             <div className="d-flex justify-content-between align-items-center mb-4">
@@ -107,7 +120,7 @@ const Exercise = () => {
 
             {/* Table */}
             <div className="table-wrapper">
-                <table className="exercise-table w-100">
+                <table className="exercise-table w-100 table table-hover">
                     <thead>
                     <tr className="exercise-row header-row">
                         <th>Inserted</th>
@@ -120,15 +133,26 @@ const Exercise = () => {
                     </thead>
                     <tbody>
                     {exercises.map((exercise) => (
-                        <tr key={exercise.exerciseId} className="exercise-row">
-                            <td><input type="checkbox" className="form-check-input" /></td>
+                        <tr
+                            key={exercise.exerciseId}
+                            className="exercise-row"
+                            onClick={() => handleShowDetail(exercise)}
+                            style={{ cursor: 'pointer' }}
+                        >
+                            <td>
+                                <input
+                                    type="checkbox"
+                                    className="form-check-input"
+                                    onClick={(e) => e.stopPropagation()}
+                                />
+                            </td>
                             <td>{exercise.exerciseName}</td>
                             <td>{exercise.bodyPart}</td>
                             <td className="fw-bold text-uppercase">{exercise.exerciceLevel}</td>
                             <td>
                                 <button
                                     className="btn btn-warning btn-sm"
-                                    onClick={() => handleEditExercise(exercise)}
+                                    onClick={(e) => { e.stopPropagation(); handleEditExercise(exercise); }}
                                 >
                                     Edit
                                 </button>
@@ -136,7 +160,7 @@ const Exercise = () => {
                             <td>
                                 <button
                                     className="btn btn-danger btn-sm ms-2"
-                                    onClick={() => handleDeleteExercise(exercise.exerciseId)}
+                                    onClick={(e) => { e.stopPropagation(); handleDeleteExercise(exercise.exerciseId); }}
                                 >
                                     Delete
                                 </button>
@@ -147,7 +171,7 @@ const Exercise = () => {
                 </table>
             </div>
 
-            {/* Modal */}
+            {/* Modal for Add/Edit */}
             {showModal && (
                 <div className="modal fade show d-block" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
                     <div className="modal-dialog">
@@ -165,20 +189,17 @@ const Exercise = () => {
                                     value={editExercise ? editExercise.exerciseName : newExercise.exerciseName}
                                     onChange={editExercise ? handleEditChange : handleChange}
                                 />
-
                                 <select
                                     className="form-control mb-2"
                                     name="exerciceLevel"
                                     value={editExercise ? editExercise.exerciceLevel : newExercise.exerciceLevel}
                                     onChange={editExercise ? handleEditChange : handleChange}
-                                    required
                                 >
                                     <option value="">Select Level</option>
                                     <option value="EASY">Easy</option>
                                     <option value="MEDIUM">Medium</option>
                                     <option value="HARD">Hard</option>
                                 </select>
-
                                 <input
                                     type="text"
                                     className="form-control mb-2"
@@ -204,6 +225,33 @@ const Exercise = () => {
                                 >
                                     {editExercise ? "Update" : "Save"}
                                 </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Detail Modal */}
+            {showDetail && detailExercise && (
+                <div className="modal fade show d-block" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
+                    <div className="modal-dialog modal-lg">
+                        <div className="modal-content">
+                            <div className="modal-header">
+                                <h5 className="modal-title">Exercise Detail</h5>
+                                <button type="button" className="btn-close" onClick={closeDetail} />
+                            </div>
+                            <div className="modal-body">
+                                <h3>{detailExercise.exerciseName}</h3>
+                                <p><strong>Level:</strong> {detailExercise.exerciceLevel}</p>
+                                <p><strong>Body Part:</strong> {detailExercise.bodyPart}</p>
+                                <img
+                                    src={detailExercise.imageURL}
+                                    alt={detailExercise.exerciseName}
+                                    className="img-fluid rounded"
+                                />
+                            </div>
+                            <div className="modal-footer">
+                                <button className="btn btn-secondary" onClick={closeDetail}>Close</button>
                             </div>
                         </div>
                     </div>

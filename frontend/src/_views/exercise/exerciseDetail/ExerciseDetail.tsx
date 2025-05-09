@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 import axios from 'axios';
-import 'bootstrap/dist/css/bootstrap.min.css';
 
 interface IExercise {
     exerciseId: number;
@@ -12,29 +11,28 @@ interface IExercise {
 }
 
 const ExerciseDetail = () => {
-    const { id } = useParams<{ id: string }>();
+    const { id } = useParams();
     const [exercise, setExercise] = useState<IExercise | null>(null);
 
     useEffect(() => {
-        if (id) {
-            axios.get(`http://localhost:8080/exercise/${id}`)
-                .then(res => setExercise(res.data))
-                .catch(err => console.error('Fehler beim Laden der Details:', err));
-        }
+        axios.get(`http://localhost:8080/exercise/${id}`)
+            .then(res => setExercise(res.data))
+            .catch(err => console.error("Fehler beim Laden:", err));
     }, [id]);
 
-    if (!exercise) return <div className="container mt-4">Lade Übung...</div>;
+    if (!exercise) return <p>Lade Übung...</p>;
 
     return (
         <div className="container mt-4">
-            <h2>Exercise Detail</h2>
-            <div className="card p-3">
-                <h3>{exercise.exerciseName}</h3>
-                <p><strong>Level:</strong> {exercise.exerciceLevel}</p>
-                <p><strong>Body Part:</strong> {exercise.bodyPart}</p>
-                <img src={exercise.imageURL} alt={exercise.exerciseName} className="img-fluid" />
-            </div>
-            <Link to="/" className="btn btn-secondary mt-3">Zurück</Link>
+            <h2>{exercise.exerciseName}</h2>
+            <p><strong>Level:</strong> {exercise.exerciceLevel}</p>
+            <p><strong>Body Part:</strong> {exercise.bodyPart}</p>
+            <img
+                src={exercise.imageURL}
+                alt={exercise.exerciseName}
+                className="img-fluid rounded"
+                style={{ maxWidth: '600px' }}
+            />
         </div>
     );
 };

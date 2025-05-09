@@ -112,5 +112,11 @@ public class WorkoutController {
         Workout workout = workoutRepository.getWorkoutWithExercisesByWorkoutName(workoutName);
         return ResponseEntity.ok(workout);
     }
+    @GetMapping("/workout/details/id/{workoutId}")
+    public ResponseEntity<Workout> getWorkoutDetailsById(@PathVariable("workoutId") Integer workoutId) {
+        Workout workout = workoutRepository.getWorkoutWithExercisesByWorkoutId(workoutId);
+        return ResponseEntity.ok(workout);
+    }
+
 
 }
