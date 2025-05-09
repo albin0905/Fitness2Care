@@ -28,7 +28,7 @@ public class WorkoutController {
         List<Workout> workouts = workoutRepository.getWorkouts();
 
         if(workouts != null){
-            log.info("Alle vorhandenen Workouts werden angezeigt");
+            log.info("GET: Alle vorhandenen Workouts werden angezeigt");
         }else{
             log.error("Fehler, Workouts wurden nicht gefunden");
         }
@@ -43,7 +43,7 @@ public class WorkoutController {
         Workout workout = workoutRepository.getWorkoutByWorkoutName(workoutName);
 
         if(workout != null){
-            log.info("Workout " + workoutName + " gefunden");
+            log.info("GET: Workout " + workoutName + " gefunden");
         }else{
             log.error("Fehler, Workout wurde nicht gefunden");
         }
@@ -64,6 +64,9 @@ public class WorkoutController {
                     .path("/{id}")
                     .buildAndExpand(newWorkout.get().getWorkoutId())
                     .toUri();
+
+            log.info("POST: Neues Workout wurde hinzugefügt");
+            log.info(String.valueOf(newWorkout));
 
             return ResponseEntity.created(location).body(newWorkout.get());
         }
@@ -97,7 +100,7 @@ public class WorkoutController {
     {
         if (workoutRepository.existsById(id)) {
             workoutRepository.deleteById(id);
-            log.info("Workout mit der ID " + id + " wurde gelöscht.");
+            log.info("DELETE: Workout mit der ID " + id + " wurde gelöscht.");
             return ResponseEntity.noContent().build();
         } else {
             log.error("Workout mit der ID " + id + " wurde nicht gefunden.");

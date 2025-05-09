@@ -27,7 +27,7 @@ public class ExerciceController {
         List<Exercice> exercices = exerciceRepository.getExercice();
 
         if(exercices != null){
-            log.info("Alle vorhandenen Exercices werden angezeigt");
+            log.info("GET: Alle vorhandenen Exercices werden angezeigt");
         }else{
             log.error("Fehler, Exercices wurden nicht gefunden");
         }
@@ -35,14 +35,14 @@ public class ExerciceController {
         return ResponseEntity.ok(exercices);
     }
 
-    @GetMapping("/exercice/{exerciceName}")
+    @GetMapping("/{exerciceName}")
     public ResponseEntity<Exercice> exerciceByName(
             @PathVariable("exerciceName") String exerciceName
     ){
         Exercice exercice = exerciceRepository.getExerciseByExerciseNameName(exerciceName);
 
         if(exercice != null){
-            log.info("Exercice " + exerciceName + " gefunden");
+            log.info("GET: Exercice " + exerciceName + " gefunden");
         }else{
             log.error("Fehler, Workout wurde nicht gefunden");
         }
@@ -63,6 +63,9 @@ public class ExerciceController {
                     .path("/{id}")
                     .buildAndExpand(newExercice.get().getExerciseId())
                     .toUri();
+
+            log.info("POST: Neue Exercic wurde hinzugefügt");
+            log.info(String.valueOf(newExercice));
 
             return ResponseEntity.created(location).body(newExercice.get());
         }

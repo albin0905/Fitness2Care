@@ -27,7 +27,7 @@ public class MemberController {
             @RequestParam(name = "email", required = true) String email,
             @RequestParam(name = "password", required = true) String password
     ){
-        log.info("Member " + email + " versucht sich einzuloggen");
+        log.info("GET: Member " + email + " versucht sich einzuloggen");
 
         Member member = memberRepository.findByEmail(email);
         if (member != null && passwordEncoder.matches(password, member.getPassword())) {
