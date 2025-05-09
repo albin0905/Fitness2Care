@@ -104,4 +104,10 @@ public class WorkoutController {
             return ResponseEntity.notFound().build();
         }
     }
+    @GetMapping("/workout/details/{workoutName}")
+    public ResponseEntity<Workout> getWorkoutDetails(@PathVariable("workoutName") String workoutName) {
+        Workout workout = workoutRepository.getWorkoutWithExercisesByWorkoutName(workoutName);
+        return ResponseEntity.ok(workout);
+    }
+
 }

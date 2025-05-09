@@ -12,12 +12,15 @@ import UserAccount from "./_views/account/UserAccount";
 import {LanguageProvider} from "./_common/context/LanguageContext";
 import {WorkoutProvider} from "./_common/context/WorkoutContext";
 import Exercise from "./_views/exercise/Exercise";
+import {ExerciseProvider} from "./_common/context/ExerciseContext";
+import ExerciseDetail from "./_views/exercise/exerciseDetail/ExerciseDetail";
 
 function App() {
   return (
   <LanguageProvider>
      <WorkoutProvider>
       <MemberProvider>
+      <ExerciseProvider>
       <BrowserRouter>
         <Routes>
             <Route path="/" element={<Login/>}/>
@@ -32,6 +35,7 @@ function App() {
           </Route>
         </Routes>
       </BrowserRouter>
+      </ExerciseProvider>
     </MemberProvider>
      </WorkoutProvider>
   </LanguageProvider>
