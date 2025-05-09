@@ -1,35 +1,53 @@
-// components/Workout.tsx
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import {useWorkoutContext} from "../../_common/context/WorkoutContext";
+
+interface IWorkout {
+    workoutId: number;
+    workoutName: string;
+    duration: number;
+    kcal: number;
+}
 
 const Workout = () => {
-    const { workouts, setWorkouts } = useWorkoutContext();
-
-    const fetchWorkouts = async () => {
-        try {
-            const response = await axios.get<IWorkout[]>('http://localhost:8080/workout/workouts');
-            console.log(response.data); // Add this to inspect the data
-            setWorkouts(response.data);
-        } catch (error) {
-            console.error('Fehler beim Laden der Workouts', error);
-        }
-    };
-
+    const [workouts, setWorkouts] = useState<IWorkout[]>([]);
+    const navigate = useNavigate();
 
     useEffect(() => {
-        fetchWorkouts();
-    }, [setWorkouts]);
+        axios.get('http://localhost:8080/workout/workouts')
+            .then((res) => {
+                setWorkouts(res.data);
+            })
+            .catch((err) => {
+                console.error('Fehler beim Laden der Workouts:', err);
+            });
+    }, []);
 
     return (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 p-4">
-            {workouts.map((workout:any) => (
-                <div key={workout.workoutId} className="bg-white shadow-md rounded-lg p-4">
-                    <h2 className="text-xl font-bold">{workout.workoutName}</h2>
-                    <p>{workout.description}</p>
-                    <p className="text-gray-500 text-sm">Dauer: {workout.duration} Minuten</p>
-                </div>
-            ))}
+        <div className="container p-4">
+            <h2 className="mb-4">Workouts</h2>
+            <table className="table table-hover">
+                <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Dauer (Minuten)</th>
+                    <th>Kcal</th>
+                </tr>
+                </thead>
+                <tbody>
+                {workouts.map((workout) => (
+                    <tr
+                        key={workout.workoutId}
+                        onClick={() => navigate(`/workout/${workout.workoutId}`)}
+                        style={{ cursor: 'pointer' }}
+                    >
+                        <td>{workout.workoutName}</td>
+                        <td>{workout.duration}</td>
+                        <td>{workout.kcal}</td>
+                    </tr>
+                ))}
+                </tbody>
+            </table>
         </div>
     );
 };

@@ -1,7 +1,7 @@
 interface IWorkout{
-    workoutId:number,
-    time:number,
-    exercises: IExercise[],
-    workoutName: string,
-    kcal: number
+    workoutId: number;
+    workoutName: string;
+    duration: number;
+    kcal: number;
+    exercices: IExercise[];
 }
