@@ -5,7 +5,7 @@ import axios from 'axios';
 interface IExercise {
     exerciseId: number;
     exerciseName: string;
-    exerciceLevel: string;
+    exerciseLevel: string;
     bodyPart: string;
     imageURL: string;
 }
@@ -25,7 +25,7 @@ const ExerciseDetail = () => {
     return (
         <div className="container mt-4">
             <h2>{exercise.exerciseName}</h2>
-            <p><strong>Level:</strong> {exercise.exerciceLevel}</p>
+            <p><strong>Level:</strong> {exercise.exerciseLevel}</p>
             <p><strong>Body Part:</strong> {exercise.bodyPart}</p>
             <img
                 src={exercise.imageURL}

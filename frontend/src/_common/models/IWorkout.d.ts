@@ -3,5 +3,6 @@ interface IWorkout{
     workoutName: string;
     duration: number;
     kcal: number;
-    exercices: IExercise[];
+    description:string;
+    exercises: IExercise[];
 }

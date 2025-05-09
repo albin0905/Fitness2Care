@@ -5,8 +5,8 @@ import axios from 'axios';
 interface IWorkout {
     workoutId: number;
     workoutName: string;
-    duration: number;
-    kcal: number;
+    time: number;
+    description: string;
 }
 
 const Workout = () => {
@@ -42,8 +42,8 @@ const Workout = () => {
                         style={{ cursor: 'pointer' }}
                     >
                         <td>{workout.workoutName}</td>
-                        <td>{workout.duration}</td>
-                        <td>{workout.kcal}</td>
+                        <td>{workout.time}</td>
+                        <td>{workout.description}</td>
                     </tr>
                 ))}
                 </tbody>

@@ -1,7 +1,9 @@
 interface IExercise{
     exerciseId: number;
     exerciseName: string;
-    exerciceLevel: string;
+    exerciseLevel: string;
     bodyPart: string;
     imageURL: string;
+    kcal:number;
+    description:string;
 }

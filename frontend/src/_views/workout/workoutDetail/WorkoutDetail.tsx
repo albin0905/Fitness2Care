@@ -12,10 +12,12 @@ const WorkoutDetail = () => {
     const [showExerciseModal, setShowExerciseModal] = useState<boolean>(false);
     const [currentExercise, setCurrentExercise] = useState<IExercise | null>(null);
     const [newExercise, setNewExercise] = useState<Omit<IExercise, 'exerciseId'>>({
+        description: "",
+        kcal: 0,
         exerciseName: '',
-        exerciceLevel: '',
+        exerciseLevel: '',
         bodyPart: '',
-        imageURL: '',
+        imageURL: ''
     });
     const [showDetailModal, setShowDetailModal] = useState<boolean>(false);
     const [detailExercise, setDetailExercise] = useState<IExercise | null>(null);
@@ -26,8 +28,8 @@ const WorkoutDetail = () => {
             const workoutData = await WorkoutService.getWorkoutDetails(Number(workoutId));
             setWorkout(workoutData);
 
-            if (workoutData?.exercices) {
-                setSelectedExercises(workoutData.exercices.map((ex: IExercise) => ex.exerciseId));
+            if (workoutData?.exercises) {
+                setSelectedExercises(workoutData.exercises.map((ex: IExercise) => ex.exerciseId));
             }
 
             const exercisesData = await ExerciseService.getAllExercises();
@@ -43,8 +45,8 @@ const WorkoutDetail = () => {
 
     const toggleEditMode = () => {
         setEditMode(!editMode);
-        if (editMode && workout?.exercices) {
-            setSelectedExercises(workout.exercices.map((ex: IExercise) => ex.exerciseId));
+        if (editMode && workout?.exercises) {
+            setSelectedExercises(workout.exercises.map((ex: IExercise) => ex.exerciseId));
         }
     };
 
@@ -66,7 +68,7 @@ const WorkoutDetail = () => {
 
             const updatedWorkout = {
                 ...workout,
-                exercices: updatedExercises
+                exercises: updatedExercises
             };
 
             await WorkoutService.updateWorkout(workout.workoutId, updatedWorkout);
@@ -85,7 +87,7 @@ const WorkoutDetail = () => {
             const exercisesData = await ExerciseService.getAllExercises();
             setAllExercises(exercisesData);
 
-            setNewExercise({ exerciseName: '', exerciceLevel: '', bodyPart: '', imageURL: '' });
+            setNewExercise({description: "", kcal: 0, exerciseName: '', exerciseLevel: '', bodyPart: '', imageURL: '' });
             setShowExerciseModal(false);
         } catch (error) {
             console.error('Fehler beim Hinzufügen der Übung:', error);
@@ -120,7 +122,7 @@ const WorkoutDetail = () => {
 
     const isExerciseInWorkout = (exerciseId: number): boolean => {
         if (!workout) return false;
-        return workout.exercices?.some((ex: IExercise) => ex.exerciseId === exerciseId) ?? false;
+        return workout.exercises?.some((ex: IExercise) => ex.exerciseId === exerciseId) ?? false;
     };
 
     const isExerciseSelected = (exerciseId: number): boolean => {
@@ -215,7 +217,7 @@ const WorkoutDetail = () => {
                         </td>
                         <td>{ex.exerciseName}</td>
                         <td>{ex.bodyPart}</td>
-                        <td>{ex.exerciceLevel}</td>
+                        <td>{ex.exerciseLevel}</td>
                         <>
                             <td>
                                 <button
@@ -246,7 +248,6 @@ const WorkoutDetail = () => {
                 </tbody>
             </table>
 
-            {/* Modal für Übungsbearbeitung/-erstellung */}
             {showExerciseModal && (
                 <div className="modal fade show d-block" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
                     <div className="modal-dialog">
@@ -281,17 +282,17 @@ const WorkoutDetail = () => {
                                 <select
                                     className="form-control mb-2"
                                     name="exerciceLevel"
-                                    value={currentExercise ? currentExercise.exerciceLevel : newExercise.exerciceLevel}
+                                    value={currentExercise ? currentExercise.exerciseLevel : newExercise.exerciseLevel}
                                     onChange={(e) => {
                                         if (currentExercise) {
                                             setCurrentExercise({
                                                 ...currentExercise,
-                                                exerciceLevel: e.target.value
+                                                exerciseLevel: e.target.value
                                             });
                                         } else {
                                             setNewExercise({
                                                 ...newExercise,
-                                                exerciceLevel: e.target.value
+                                                exerciseLevel: e.target.value
                                             });
                                         }
                                     }}
@@ -341,6 +342,26 @@ const WorkoutDetail = () => {
                                         }
                                     }}
                                 />
+                                <input
+                                    type="text"
+                                    className="form-control mb-2"
+                                    placeholder="Beschreibung"
+                                    name="description"
+                                    value={currentExercise ? currentExercise.description : newExercise.description}
+                                    onChange={(e) => {
+                                        if (currentExercise) {
+                                            setCurrentExercise({
+                                                ...currentExercise,
+                                                description: e.target.value
+                                            });
+                                        } else {
+                                            setNewExercise({
+                                                ...newExercise,
+                                                description: e.target.value
+                                            });
+                                        }
+                                    }}
+                                />
                             </div>
                             <div className="modal-footer">
                                 <button
@@ -348,7 +369,8 @@ const WorkoutDetail = () => {
                                     onClick={() => {
                                         setShowExerciseModal(false);
                                         setCurrentExercise(null);
-                                        setNewExercise({ exerciseName: '', exerciceLevel: '', bodyPart: '', imageURL: '' });
+                                        setNewExercise({exerciseName: '', exerciseLevel: '', bodyPart: '',
+                                            imageURL: '',description: "", kcal: 0 });
                                     }}
                                 >
                                     Abbrechen
@@ -376,7 +398,7 @@ const WorkoutDetail = () => {
                             </div>
                             <div className="modal-body">
                                 <h3>{detailExercise.exerciseName}</h3>
-                                <p><strong>Level:</strong> {detailExercise.exerciceLevel}</p>
+                                <p><strong>Level:</strong> {detailExercise.exerciseLevel}</p>
                                 <p><strong>Muskelgruppe:</strong> {detailExercise.bodyPart}</p>
                                 {detailExercise.imageURL && (
                                     <img

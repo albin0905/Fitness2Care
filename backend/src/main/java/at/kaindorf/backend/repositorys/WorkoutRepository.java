@@ -16,10 +16,10 @@ public interface WorkoutRepository extends JpaRepository<Workout, Integer> {
     @Query("SELECT w FROM Workout w WHERE w.workoutName = ?1")
     Workout getWorkoutByWorkoutName(String workoutName);
 
-    @Query("SELECT w FROM Workout w LEFT JOIN FETCH w.exercices WHERE w.workoutName = :workoutName")
+    @Query("SELECT w FROM Workout w LEFT JOIN FETCH w.exercises WHERE w.workoutName = ?1")
     Workout getWorkoutWithExercisesByWorkoutName(@Param("workoutName") String workoutName);
 
-    @Query("SELECT w FROM Workout w LEFT JOIN FETCH w.exercices WHERE w.workoutId = :id")
+    @Query("SELECT w FROM Workout w LEFT JOIN FETCH w.exercises WHERE w.workoutId = ?1")
     Workout getWorkoutWithExercisesByWorkoutId(@Param("id") Integer id);
 
 }
