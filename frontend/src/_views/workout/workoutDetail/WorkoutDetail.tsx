@@ -12,12 +12,12 @@ const WorkoutDetail = () => {
     const [showExerciseModal, setShowExerciseModal] = useState<boolean>(false);
     const [currentExercise, setCurrentExercise] = useState<IExercise | null>(null);
     const [newExercise, setNewExercise] = useState<Omit<IExercise, 'exerciseId'>>({
-        description: "",
-        kcal: 0,
         exerciseName: '',
-        exerciseLevel: '',
         bodyPart: '',
-        imageURL: ''
+        imageURL: '',
+        exerciseLevel:'',
+        description:'',
+        kcal:0
     });
     const [showDetailModal, setShowDetailModal] = useState<boolean>(false);
     const [detailExercise, setDetailExercise] = useState<IExercise | null>(null);
@@ -68,7 +68,7 @@ const WorkoutDetail = () => {
 
             const updatedWorkout = {
                 ...workout,
-                exercises: updatedExercises
+                exercices: updatedExercises
             };
 
             await WorkoutService.updateWorkout(workout.workoutId, updatedWorkout);
@@ -87,7 +87,7 @@ const WorkoutDetail = () => {
             const exercisesData = await ExerciseService.getAllExercises();
             setAllExercises(exercisesData);
 
-            setNewExercise({description: "", kcal: 0, exerciseName: '', exerciseLevel: '', bodyPart: '', imageURL: '' });
+            setNewExercise({ exerciseName: '', exerciseLevel: '', bodyPart: '', imageURL: '',kcal:0,description:'' });
             setShowExerciseModal(false);
         } catch (error) {
             console.error('Fehler beim Hinzufügen der Übung:', error);
@@ -248,6 +248,7 @@ const WorkoutDetail = () => {
                 </tbody>
             </table>
 
+            {/* Modal für Übungsbearbeitung/-erstellung */}
             {showExerciseModal && (
                 <div className="modal fade show d-block" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
                     <div className="modal-dialog">
@@ -342,26 +343,6 @@ const WorkoutDetail = () => {
                                         }
                                     }}
                                 />
-                                <input
-                                    type="text"
-                                    className="form-control mb-2"
-                                    placeholder="Beschreibung"
-                                    name="description"
-                                    value={currentExercise ? currentExercise.description : newExercise.description}
-                                    onChange={(e) => {
-                                        if (currentExercise) {
-                                            setCurrentExercise({
-                                                ...currentExercise,
-                                                description: e.target.value
-                                            });
-                                        } else {
-                                            setNewExercise({
-                                                ...newExercise,
-                                                description: e.target.value
-                                            });
-                                        }
-                                    }}
-                                />
                             </div>
                             <div className="modal-footer">
                                 <button
@@ -369,8 +350,7 @@ const WorkoutDetail = () => {
                                     onClick={() => {
                                         setShowExerciseModal(false);
                                         setCurrentExercise(null);
-                                        setNewExercise({exerciseName: '', exerciseLevel: '', bodyPart: '',
-                                            imageURL: '',description: "", kcal: 0 });
+                                        setNewExercise({ exerciseName: '', exerciseLevel: '', bodyPart: '', imageURL: '',description:'',kcal:0 });
                                     }}
                                 >
                                     Abbrechen

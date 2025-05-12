@@ -2,12 +2,12 @@ import axios from 'axios';
 
 export class ExerciseService {
     static async getAllExercises(): Promise<IExercise[]> {
-        const response = await axios.get<IExercise[]>('http://localhost:8080/exercise/exercices');
+        const response = await axios.get<IExercise[]>('http://localhost:8080/exercise/exercises');
         return response.data;
     }
 
     static async createExercise(exercise: Omit<IExercise, 'exerciseId'>): Promise<IExercise> {
-        const response = await axios.post<IExercise>('http://localhost:8080/exercise/addExercice', exercise);
+        const response = await axios.post<IExercise>('http://localhost:8080/exercise/addExercise', exercise);
         return response.data;
     }
 
