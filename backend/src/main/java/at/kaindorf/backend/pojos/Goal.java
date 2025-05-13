@@ -13,7 +13,7 @@ import java.util.Locale;
 @Entity
 public class Goal {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Integer goalId;
     @NonNull
     @Column(nullable = false)
