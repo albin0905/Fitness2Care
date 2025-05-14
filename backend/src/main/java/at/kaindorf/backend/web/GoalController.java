@@ -24,7 +24,7 @@ public class GoalController {
     private final GoalRepository goalRepository;
 
     @GetMapping("/goals/{userId}")
-    public ResponseEntity<List<Goal>> workouts(
+    public ResponseEntity<List<Goal>> goals(
             @PathVariable("userId") Integer id
     ){
         List<Goal> goals = goalRepository.getGoalsByUserId(id);
