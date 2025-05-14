@@ -2,13 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
-interface IWorkout {
-    workoutId: number;
-    workoutName: string;
-    time: number;
-    description: string;
-}
-
 const Workout = () => {
     const [workouts, setWorkouts] = useState<IWorkout[]>([]);
     const navigate = useNavigate();
@@ -23,6 +16,11 @@ const Workout = () => {
             });
     }, []);
 
+    // Funktion zur Berechnung der Gesamtkalorien eines Workouts
+    const calculateTotalCalories = (exercises: IExercise[] = []) => {
+        return exercises.reduce((sum, ex) => sum + (ex.kcal || 0), 0);
+    };
+
     return (
         <div className="container p-4">
             <h2 className="mb-4">Workouts</h2>
@@ -31,7 +29,8 @@ const Workout = () => {
                 <tr>
                     <th>Name</th>
                     <th>Dauer (Minuten)</th>
-                    <th>Kcal</th>
+                    <th>Kalorien</th>
+                    <th>Beschreibung</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -43,6 +42,7 @@ const Workout = () => {
                     >
                         <td>{workout.workoutName}</td>
                         <td>{workout.time}</td>
+                        <td>{calculateTotalCalories(workout.exercises)} kcal</td>
                         <td>{workout.description}</td>
                     </tr>
                 ))}
