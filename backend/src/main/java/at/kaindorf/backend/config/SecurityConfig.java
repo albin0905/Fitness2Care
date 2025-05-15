@@ -32,6 +32,7 @@ public class SecurityConfig {
                         .requestMatchers("/workout/**").permitAll()
                         .requestMatchers("/exercise/**").permitAll()
                         .requestMatchers("/goal/**").permitAll()
+                        .requestMatchers("/product/**").permitAll()
                         .anyRequest().authenticated()
                 );
 
