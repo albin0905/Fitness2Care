@@ -15,13 +15,21 @@ const WorkoutDetail = () => {
         exerciseName: '',
         bodyPart: '',
         imageURL: '',
-        exerciseLevel:'',
-        description:'',
-        kcal:0
+        exerciseLevel: '',
+        description: '',
+        kcal: 0
     });
     const [showDetailModal, setShowDetailModal] = useState<boolean>(false);
     const [detailExercise, setDetailExercise] = useState<IExercise | null>(null);
     const navigate = useNavigate();
+
+    const calculateTotalCalories = () => {
+        if (!allExercises.length) return 0;
+
+        return allExercises
+            .filter(ex => selectedExercises.includes(ex.exerciseId))
+            .reduce((sum, ex) => sum + (ex.kcal || 0), 0);
+    };
 
     const fetchData = async () => {
         try {
@@ -68,7 +76,7 @@ const WorkoutDetail = () => {
 
             const updatedWorkout = {
                 ...workout,
-                exercices: updatedExercises
+                exercises: updatedExercises
             };
 
             await WorkoutService.updateWorkout(workout.workoutId, updatedWorkout);
@@ -87,7 +95,7 @@ const WorkoutDetail = () => {
             const exercisesData = await ExerciseService.getAllExercises();
             setAllExercises(exercisesData);
 
-            setNewExercise({ exerciseName: '', exerciseLevel: '', bodyPart: '', imageURL: '',kcal:0,description:'' });
+            setNewExercise({ exerciseName: '', exerciseLevel: '', bodyPart: '', imageURL: '', kcal: 0, description: '' });
             setShowExerciseModal(false);
         } catch (error) {
             console.error('Fehler beim Hinzufügen der Übung:', error);
@@ -173,6 +181,12 @@ const WorkoutDetail = () => {
                         + Neue Übung
                     </button>
                 </div>
+
+                {editMode && (
+                    <div className="alert alert-info mb-0">
+                        Gesamtkalorien: <strong>{calculateTotalCalories()} kcal</strong>
+                    </div>
+                )}
             </div>
 
             <table className="table table-hover">
@@ -182,6 +196,7 @@ const WorkoutDetail = () => {
                     <th>Übung</th>
                     <th>Muskelgruppe</th>
                     <th>Level</th>
+                    <th>Kcal</th>
                     <th>Bearbeiten</th>
                     <th>Löschen</th>
                 </tr>
@@ -218,37 +233,35 @@ const WorkoutDetail = () => {
                         <td>{ex.exerciseName}</td>
                         <td>{ex.bodyPart}</td>
                         <td>{ex.exerciseLevel}</td>
-                        <>
-                            <td>
-                                <button
-                                    className="btn btn-warning btn-sm"
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                        setCurrentExercise(ex);
-                                        setShowExerciseModal(true);
-                                    }}
-                                >
-                                    Bearbeiten
-                                </button>
-                            </td>
-                            <td>
-                                <button
-                                    className="btn btn-danger btn-sm"
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                        handleDeleteExercise(ex.exerciseId);
-                                    }}
-                                >
-                                    Löschen
-                                </button>
-                            </td>
-                        </>
+                        <td>{ex.kcal} kcal</td>
+                        <td>
+                            <button
+                                className="btn btn-warning btn-sm"
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    setCurrentExercise(ex);
+                                    setShowExerciseModal(true);
+                                }}
+                            >
+                                Bearbeiten
+                            </button>
+                        </td>
+                        <td>
+                            <button
+                                className="btn btn-danger btn-sm"
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleDeleteExercise(ex.exerciseId);
+                                }}
+                            >
+                                Löschen
+                            </button>
+                        </td>
                     </tr>
                 ))}
                 </tbody>
             </table>
 
-            {/* Modal für Übungsbearbeitung/-erstellung */}
             {showExerciseModal && (
                 <div className="modal fade show d-block" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
                     <div className="modal-dialog">
@@ -343,6 +356,46 @@ const WorkoutDetail = () => {
                                         }
                                     }}
                                 />
+                                <input
+                                    type="number"
+                                    className="form-control mb-2"
+                                    placeholder="Kalorien (kcal)"
+                                    name="kcal"
+                                    value={currentExercise ? currentExercise.kcal : newExercise.kcal}
+                                    onChange={(e) => {
+                                        const kcalValue = parseInt(e.target.value) || 0;
+                                        if (currentExercise) {
+                                            setCurrentExercise({
+                                                ...currentExercise,
+                                                kcal: kcalValue
+                                            });
+                                        } else {
+                                            setNewExercise({
+                                                ...newExercise,
+                                                kcal: kcalValue
+                                            });
+                                        }
+                                    }}
+                                />
+                                <textarea
+                                    className="form-control mb-2"
+                                    placeholder="Beschreibung"
+                                    name="description"
+                                    value={currentExercise ? currentExercise.description : newExercise.description}
+                                    onChange={(e) => {
+                                        if (currentExercise) {
+                                            setCurrentExercise({
+                                                ...currentExercise,
+                                                description: e.target.value
+                                            });
+                                        } else {
+                                            setNewExercise({
+                                                ...newExercise,
+                                                description: e.target.value
+                                            });
+                                        }
+                                    }}
+                                />
                             </div>
                             <div className="modal-footer">
                                 <button
@@ -350,7 +403,7 @@ const WorkoutDetail = () => {
                                     onClick={() => {
                                         setShowExerciseModal(false);
                                         setCurrentExercise(null);
-                                        setNewExercise({ exerciseName: '', exerciseLevel: '', bodyPart: '', imageURL: '',description:'',kcal:0 });
+                                        setNewExercise({ exerciseName: '', exerciseLevel: '', bodyPart: '', imageURL: '', description: '', kcal: 0 });
                                     }}
                                 >
                                     Abbrechen
@@ -367,7 +420,6 @@ const WorkoutDetail = () => {
                 </div>
             )}
 
-            {/* Detail Modal */}
             {showDetailModal && detailExercise && (
                 <div className="modal fade show d-block" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
                     <div className="modal-dialog modal-lg">
@@ -380,6 +432,8 @@ const WorkoutDetail = () => {
                                 <h3>{detailExercise.exerciseName}</h3>
                                 <p><strong>Level:</strong> {detailExercise.exerciseLevel}</p>
                                 <p><strong>Muskelgruppe:</strong> {detailExercise.bodyPart}</p>
+                                <p><strong>Kalorien:</strong> {detailExercise.kcal} kcal</p>
+                                <p><strong>Beschreibung:</strong> {detailExercise.description}</p>
                                 {detailExercise.imageURL && (
                                     <img
                                         src={detailExercise.imageURL}
