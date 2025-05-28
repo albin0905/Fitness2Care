@@ -31,4 +31,6 @@ public class Workout {
     @NonNull
     @Column(nullable = false)
     private String description;
+    @ManyToMany(mappedBy = "workouts")
+    private List<Goal> goals = new ArrayList<>();
 }

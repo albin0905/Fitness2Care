@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 @Data
@@ -27,4 +29,11 @@ public class Goal {
     @NonNull
     @Column(nullable = false)
     private Integer kcal;
+    @ManyToMany
+    @JoinTable(
+            name = "goal_workout",
+            joinColumns = @JoinColumn(name = "goal_id"),
+            inverseJoinColumns = @JoinColumn(name = "workout_id")
+    )
+    private List<Workout> workouts = new ArrayList<>();
 }
