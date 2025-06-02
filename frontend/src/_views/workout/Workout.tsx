@@ -34,10 +34,10 @@ const Workout = () => {
                 </tr>
                 </thead>
                 <tbody>
-                {workouts.map((workout) => (
+                {workouts.map((workout:IWorkout) => (
                     <tr
                         key={workout.workoutId}
-                        onClick={() => navigate(`/workout/${workout.workoutId}`)}
+                        onClick={() => navigate(`/workout/details/id/${workout.workoutId}`)}
                         style={{ cursor: 'pointer' }}
                     >
                         <td>{workout.workoutName}</td>

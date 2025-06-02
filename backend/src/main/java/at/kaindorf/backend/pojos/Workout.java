@@ -1,5 +1,7 @@
 package at.kaindorf.backend.pojos;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -19,6 +21,7 @@ public class Workout {
     @Column(nullable = false)
     private Integer time;
     @ManyToMany
+    @JsonManagedReference
     @JoinTable(
             name = "workout_exercise",
             joinColumns = @JoinColumn(name = "workout_id"),
@@ -32,5 +35,6 @@ public class Workout {
     @Column(nullable = false)
     private String description;
     @ManyToMany(mappedBy = "workouts")
+    @JsonIgnore
     private List<Goal> goals = new ArrayList<>();
 }

@@ -1,5 +1,6 @@
 package at.kaindorf.backend.pojos;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
@@ -36,7 +37,6 @@ public class Exercise {
     @Column(nullable = false)
     private String description;
     @ManyToMany(mappedBy = "exercises")
-    @ToString.Exclude
-    @JsonIgnore
+    @JsonBackReference
     private List<Workout> workouts = new ArrayList<>();
 }

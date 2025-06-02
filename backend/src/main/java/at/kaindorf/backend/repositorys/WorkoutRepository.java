@@ -11,7 +11,7 @@ import java.util.List;
 public interface WorkoutRepository extends JpaRepository<Workout, Integer> {
 
     @Query("SELECT w FROM Workout w")
-    List<Workout> getWorkouts();
+    List<Workout> getAllWorkouts();
 
     @Query("SELECT w FROM Workout w WHERE w.workoutName = ?1")
     Workout getWorkoutByWorkoutName(String workoutName);

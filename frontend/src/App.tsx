@@ -33,7 +33,7 @@ function App() {
                                     <Route path="/calorietracker" element={<CalorieTracker />} />
                                     <Route path="/account" element={<UserAccount />} />
                                     <Route path="/exercise" element={<Exercise />} />
-                                    <Route path="/workout/:workoutId" element={<WorkoutDetail />} />
+                                    <Route path="/workout/details/id/:workoutId" element={<WorkoutDetail />} />
                                 </Route>
                             </Routes>
                         </BrowserRouter>

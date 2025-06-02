@@ -22,12 +22,11 @@ public class WorkoutController {
     private final WorkoutRepository workoutRepository;
 
     @GetMapping("/workouts")
-    public ResponseEntity<List<Workout>> workouts(){
-        List<Workout> workouts = workoutRepository.getWorkouts();
-
-        if(workouts != null){
+    public ResponseEntity<List<Workout>> workouts() {
+        List<Workout> workouts = workoutRepository.getAllWorkouts(); // Passe ggf. Methode an
+        if (workouts != null) {
             log.info("GET: Alle vorhandenen Workouts werden angezeigt");
-        }else{
+        } else {
             log.error("Fehler, Workouts wurden nicht gefunden");
         }
 

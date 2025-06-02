@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -107,5 +108,20 @@ public class GoalController {
             log.error("Goal mit der ID " + id + " wurde nicht gefunden.");
             return ResponseEntity.notFound().build();
         }
+    }
+
+    @GetMapping("/{date}")
+    public ResponseEntity<List<Goal>> goalByDate(
+            @PathVariable("date") LocalDate date
+    ){
+        List<Goal> goals = goalRepository.getGoalsByDate(date);
+
+        if(goals != null){
+            log.info("GET: Ziel(e) " + goals + " laufen heute ab.");
+        }else{
+            log.error("Fehler, keine Ziele wurden gefunden");
+        }
+
+        return ResponseEntity.ok(goals);
     }
 }
