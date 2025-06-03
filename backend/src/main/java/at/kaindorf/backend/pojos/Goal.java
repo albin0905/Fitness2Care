@@ -1,5 +1,6 @@
 package at.kaindorf.backend.pojos;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -13,6 +14,7 @@ import java.util.Locale;
 @NoArgsConstructor
 @RequiredArgsConstructor
 @Entity
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Goal {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -29,11 +31,12 @@ public class Goal {
     @NonNull
     @Column(nullable = false)
     private Integer kcal;
-    @ManyToMany
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
             name = "goal_workout",
             joinColumns = @JoinColumn(name = "goal_id"),
             inverseJoinColumns = @JoinColumn(name = "workout_id")
     )
     private List<Workout> workouts = new ArrayList<>();
+
 }
