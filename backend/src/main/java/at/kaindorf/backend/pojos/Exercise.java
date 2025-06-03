@@ -37,6 +37,7 @@ public class Exercise {
     @Column(nullable = false)
     private String description;
     @ManyToMany(mappedBy = "exercises")
+    @ToString.Exclude
     @JsonBackReference
     private List<Workout> workouts = new ArrayList<>();
 }

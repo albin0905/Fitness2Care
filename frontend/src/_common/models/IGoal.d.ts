@@ -1,7 +1,8 @@
-interface IGoal{
-    id:number,
-    goalName:string,
-    date:Date,
-    kcal: number,
-    userId: number
+export interface IGoal {
+    goalId: number;
+    goalName: string;
+    date: string;
+    kcal: number;
+    userId: number;
+    workouts: IWorkout[];
 }

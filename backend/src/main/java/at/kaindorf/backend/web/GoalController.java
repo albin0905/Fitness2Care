@@ -6,23 +6,28 @@ import at.kaindorf.backend.repositorys.GoalRepository;
 import at.kaindorf.backend.repositorys.WorkoutRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
 @RequestMapping("/goal")
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
 @Slf4j
 @RequiredArgsConstructor
 public class GoalController {
     private final GoalRepository goalRepository;
+    private final WorkoutRepository workoutRepository;
 
     @GetMapping("/goals/{userId}")
     public ResponseEntity<List<Goal>> goals(
@@ -39,20 +44,19 @@ public class GoalController {
         return ResponseEntity.ok(goals);
     }
 
-    @GetMapping("/{goalId}")
-    public ResponseEntity<Goal> goalById(
-            @PathVariable("goalId") Integer goalId
-    ){
+    @GetMapping("/goal/id/{id}")
+    public ResponseEntity<Goal> goalById(@PathVariable("id") Integer goalId) {
         Goal goal = goalRepository.getGoalByGoalId(goalId);
 
-        if(goal != null){
+        if (goal != null) {
             log.info("GET: Ziel " + goal + " wurde gefunden");
-        }else{
+            return ResponseEntity.ok(goal);
+        } else {
             log.error("Fehler, Ziel " + goalId + " wurde nicht gefunden");
+            return ResponseEntity.notFound().build();
         }
-
-        return ResponseEntity.ok(goal);
     }
+
 
     @PostMapping("/addGoal")
     public ResponseEntity<Goal> addGoal(
@@ -81,8 +85,8 @@ public class GoalController {
     public ResponseEntity<Goal> updateGoal(
             @PathVariable Integer id,
             @RequestBody Goal goal
-    ){
-        log.info("PUT: Goal mit der ID " + id +  " wird aktualisiert");
+    ) {
+        log.info("PUT: Goal mit der ID " + id + " wird aktualisiert");
 
         return goalRepository.findById(id)
                 .map(existingGoal -> {
@@ -90,11 +94,17 @@ public class GoalController {
                     existingGoal.setDate(goal.getDate());
                     existingGoal.setKcal(goal.getKcal());
 
+                    if (goal.getWorkouts() != null) {
+                        existingGoal.getWorkouts().clear();
+                        existingGoal.getWorkouts().addAll(goal.getWorkouts());
+                    }
+
                     Goal updatedGoal = goalRepository.save(existingGoal);
                     return ResponseEntity.ok(updatedGoal);
                 })
                 .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
+
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteGoal(
@@ -110,18 +120,68 @@ public class GoalController {
         }
     }
 
-    @GetMapping("/{date}")
+    @GetMapping("/goal/date/{date}")
     public ResponseEntity<List<Goal>> goalByDate(
-            @PathVariable("date") LocalDate date
+            @PathVariable("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date
     ){
         List<Goal> goals = goalRepository.getGoalsByDate(date);
 
         if(goals != null){
             log.info("GET: Ziel(e) " + goals + " laufen heute ab.");
-        }else{
+        } else {
             log.error("Fehler, keine Ziele wurden gefunden");
         }
 
         return ResponseEntity.ok(goals);
     }
+
+    @PutMapping(value = "/{goalId}/add-workout", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Goal> addWorkoutToGoal(
+            @PathVariable Integer goalId,
+            @RequestBody Map<String, Object> payload
+    ) {
+        try {
+            if (!payload.containsKey("workoutId")) {
+                log.error("Payload enthält keinen workoutId");
+                return ResponseEntity.badRequest().body(null);
+            }
+
+            Number workoutIdNum = (Number) payload.get("workoutId");
+            Integer workoutId = workoutIdNum.intValue();
+
+            Optional<Goal> goalOpt = goalRepository.findById(goalId);
+            if (goalOpt.isEmpty()) {
+                log.error("Goal mit ID {} nicht gefunden", goalId);
+                return ResponseEntity.notFound().build();
+            }
+            Goal existingGoal = goalOpt.get();
+
+            Optional<Workout> workoutToAdd = workoutRepository.findById(workoutId);
+            if (workoutToAdd.isEmpty()) {
+                log.error("Workout mit ID {} nicht gefunden", workoutId);
+                return ResponseEntity.badRequest().build();
+            }
+
+            existingGoal.getWorkouts().add(workoutToAdd.get());
+            goalRepository.save(existingGoal);
+            log.info("Workout {} zu Goal {} hinzugefügt", workoutId, goalId);
+
+            return ResponseEntity.ok(existingGoal);
+        } catch (Exception e) {
+            log.error("Fehler beim Hinzufügen des Workouts zum Ziel", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Goal> getGoalById(@PathVariable Integer id) {
+        Goal goal = goalRepository.getGoalByGoalId(id);
+        if (goal != null) {
+            return ResponseEntity.ok(goal);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+
 }
