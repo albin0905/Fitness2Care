@@ -1,62 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import axios, { AxiosError } from 'axios';
+import { AxiosError } from 'axios';
 import { IGoal } from "../../_common/models/IGoal";
 import { useMemberContext } from "../../_common/context/MemberContext";
 import CalorieHistory from "./CalorieHistory";
-
-export interface ICalorieHistoryItem {
-    date: string;
-    initialKcal: number;
-    consumedKcal: number;
-    remainingKcal: number;
-}
-
-interface ICalorieHistory {
-    [goalId: number]: ICalorieHistoryItem[];
-}
-
-const getHistoryFromStorage = (goalId?: number): ICalorieHistory | ICalorieHistoryItem[] => {
-    const history = localStorage.getItem('calorieHistory');
-    const parsedHistory = history ? JSON.parse(history) : {};
-
-    if (goalId !== undefined) {
-        return parsedHistory[goalId] || [];
-    }
-
-    return parsedHistory;
-};
-
-const saveHistoryToStorage = (history: ICalorieHistory) => {
-    localStorage.setItem('calorieHistory', JSON.stringify(history));
-};
-
-const addToHistory = (goal: IGoal, kcalConsumed: number) => {
-    const history = getHistoryFromStorage() as ICalorieHistory;
-    const goalHistory = history[goal.goalId] || [];
-
-    if (goalHistory.length === 0) {
-        goalHistory.push({
-            date: new Date().toISOString(),
-            initialKcal: goal.kcal + kcalConsumed,
-            consumedKcal: 0,
-            remainingKcal: goal.kcal + kcalConsumed
-        });
-    }
-
-    const lastEntry = goalHistory[goalHistory.length - 1];
-    const newEntry = {
-        date: new Date().toISOString(),
-        initialKcal: lastEntry.initialKcal,
-        consumedKcal: lastEntry.consumedKcal + kcalConsumed,
-        remainingKcal: lastEntry.remainingKcal - kcalConsumed
-    };
-
-    goalHistory.push(newEntry);
-    history[goal.goalId] = goalHistory;
-    saveHistoryToStorage(history);
-
-    return newEntry;
-};
+import { CalorieTrackerService } from '../../_components/services/CalorieTrackerService';
 
 const CalorieTracker = () => {
     const [products, setProducts] = useState<IProduct[]>([]);
@@ -73,10 +20,8 @@ const CalorieTracker = () => {
         const fetchGoal = async () => {
             try {
                 const today = new Date().toISOString().split("T")[0];
-                const res = await axios.get<IGoal>(
-                    `http://localhost:8080/goal/currentGoal/${userId}/${today}`
-                );
-                setGoal(res.data);
+                const goalData = await CalorieTrackerService.getCurrentGoal(userId, today);
+                setGoal(goalData);
             } catch (err) {
                 console.error("Ziel konnte nicht geladen werden", err);
                 setGoal(null);
@@ -88,8 +33,8 @@ const CalorieTracker = () => {
 
     const fetchProducts = async () => {
         try {
-            const response = await axios.get(`http://localhost:8080/product/filterByName/${search}?page=${page}`);
-            setProducts(response.data.content);
+            const productsData = await CalorieTrackerService.searchProductsByName(search, page);
+            setProducts(productsData);
         } catch (error) {
             console.error("Fehler beim Laden der Produkte:", error);
             setProducts([]);
@@ -110,21 +55,79 @@ const CalorieTracker = () => {
             return;
         }
 
-        const grams = gramInputs[product.barcode] || 100; // Default to 100g if no input
+        const grams = gramInputs[product.barcode] || 100;
         const kcalToAdd = Math.round((product.kcal_100g * grams) / 100);
 
         try {
-            const response = await axios.put(
-                `http://localhost:8080/goal/${goal.goalId}`,
-                { kcal: goal.kcal - kcalToAdd },
-                { headers: { 'Content-Type': 'application/json' } }
+            const consumedItem = {
+                id: `${Date.now()}-${product.barcode}`,
+                date: new Date().toISOString(),
+                productName: product.productName,
+                kcal: kcalToAdd,
+                grams: grams
+            };
+
+            const storedConsumed = JSON.parse(localStorage.getItem('consumedItems') || '{}');
+            const currentItems = storedConsumed[goal.goalId] || [];
+            storedConsumed[goal.goalId] = [...currentItems, consumedItem];
+            localStorage.setItem('consumedItems', JSON.stringify(storedConsumed));
+
+            const storedHistory = JSON.parse(localStorage.getItem('calorieHistory') || '{}');
+            const goalHistory = storedHistory[goal.goalId] || [];
+
+            let newHistory = [];
+            if (goalHistory.length === 0) {
+                newHistory = [
+                    {
+                        date: new Date().toISOString(),
+                        initialKcal: goal.kcal + kcalToAdd,
+                        consumedKcal: 0,
+                        remainingKcal: goal.kcal + kcalToAdd
+                    },
+                    {
+                        date: new Date().toISOString(),
+                        initialKcal: goal.kcal + kcalToAdd,
+                        consumedKcal: kcalToAdd,
+                        remainingKcal: goal.kcal
+                    }
+                ];
+            } else {
+                const allItems = [...(storedConsumed[goal.goalId] || [])];
+                const initialKcal = goalHistory[0].initialKcal;
+                let runningTotal = 0;
+
+                const sortedItems = [...allItems].sort((a, b) =>
+                    new Date(a.date).getTime() - new Date(b.date).getTime()
+                );
+
+                newHistory.push({
+                    date: goalHistory[0].date,
+                    initialKcal,
+                    consumedKcal: 0,
+                    remainingKcal: initialKcal
+                });
+
+                for (const item of sortedItems) {
+                    runningTotal += item.kcal;
+                    newHistory.push({
+                        date: item.date,
+                        initialKcal,
+                        consumedKcal: runningTotal,
+                        remainingKcal: initialKcal - runningTotal
+                    });
+                }
+            }
+
+            storedHistory[goal.goalId] = newHistory;
+            localStorage.setItem('calorieHistory', JSON.stringify(storedHistory));
+
+            const updatedGoal = await CalorieTrackerService.updateGoalKcal(
+                goal.goalId,
+                goal.kcal - kcalToAdd
             );
 
-            const updatedGoal = response.data;
-            addToHistory(updatedGoal, kcalToAdd);
-            alert(`✅ ${kcalToAdd} kcal (${grams}g) abgezogen`);
+            alert(`✅ ${kcalToAdd} kcal (${grams}g) hinzugefügt`);
             setGoal(updatedGoal);
-
             window.dispatchEvent(new Event('storage'));
         } catch (err) {
             if (err instanceof AxiosError) {
@@ -291,7 +294,7 @@ const CalorieTracker = () => {
                 </div>
             )}
 
-            {goal && <CalorieHistory goalId={goal.goalId} />}
+            {goal && <CalorieHistory goalId={goal.goalId} currentGoal={goal} setGoal={setGoal} />}
         </div>
     );
 };
