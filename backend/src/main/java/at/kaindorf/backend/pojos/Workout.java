@@ -1,5 +1,6 @@
     package at.kaindorf.backend.pojos;
 
+    import com.fasterxml.jackson.annotation.JsonBackReference;
     import com.fasterxml.jackson.annotation.JsonIgnore;
     import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
     import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -24,7 +25,7 @@
         @Column(nullable = false)
         private Integer time;
         @ManyToMany
-        @JsonManagedReference
+        @JsonManagedReference(value = "workout-exercises")
         @ToString.Exclude
         @JoinTable(
                 name = "workout_exercise",
@@ -39,9 +40,7 @@
         @Column(nullable = false)
         private String description;
         @ManyToMany(mappedBy = "workouts")
-        @JsonIgnore
+        @JsonBackReference(value = "goal-workouts")
         @ToString.Exclude
         private List<Goal> goals = new ArrayList<>();
-
-
     }

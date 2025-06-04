@@ -81,28 +81,19 @@ public class GoalController {
         return ResponseEntity.status(HttpStatus.CONFLICT).build();
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Goal> updateGoal(
+    @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Goal> updateGoalKcal(
             @PathVariable Integer id,
-            @RequestBody Goal goal
-    ) {
-        log.info("PUT: Goal mit der ID " + id + " wird aktualisiert");
+            @RequestBody Map<String, Object> updates) {
 
         return goalRepository.findById(id)
                 .map(existingGoal -> {
-                    existingGoal.setGoalName(goal.getGoalName());
-                    existingGoal.setDate(goal.getDate());
-                    existingGoal.setKcal(goal.getKcal());
-
-                    if (goal.getWorkouts() != null) {
-                        existingGoal.getWorkouts().clear();
-                        existingGoal.getWorkouts().addAll(goal.getWorkouts());
+                    if (updates.containsKey("kcal")) {
+                        existingGoal.setKcal((Integer) updates.get("kcal"));
                     }
-
-                    Goal updatedGoal = goalRepository.save(existingGoal);
-                    return ResponseEntity.ok(updatedGoal);
+                    return ResponseEntity.ok(goalRepository.save(existingGoal));
                 })
-                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
 
@@ -120,19 +111,20 @@ public class GoalController {
         }
     }
 
-    @GetMapping("/goal/date/{date}")
-    public ResponseEntity<List<Goal>> goalByDate(
-            @PathVariable("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date
-    ){
-        List<Goal> goals = goalRepository.getGoalsByDate(date);
+    @GetMapping("/currentGoal/{memberId}/{date}")
+    public ResponseEntity<Goal> getCurrentGoalByMemberAndDate(
+            @PathVariable("memberId") Long memberId,
+            @PathVariable("date") LocalDate date
+    ) {
+        Goal goal = goalRepository.findCurrentGoalByMemberIdAndDate(memberId, date);
 
-        if(goals != null){
-            log.info("GET: Ziel(e) " + goals + " laufen heute ab.");
+        if (goal != null) {
+            log.info("GET: Aktuelles Ziel für Mitglied " + memberId + ": " + goal);
+            return ResponseEntity.ok(goal);
         } else {
-            log.error("Fehler, keine Ziele wurden gefunden");
+            log.warn("Kein aktuelles Ziel für Mitglied " + memberId + " am " + date + " gefunden.");
+            return ResponseEntity.notFound().build();
         }
-
-        return ResponseEntity.ok(goals);
     }
 
     @PutMapping(value = "/{goalId}/add-workout", consumes = MediaType.APPLICATION_JSON_VALUE)

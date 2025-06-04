@@ -1,6 +1,8 @@
 package at.kaindorf.backend.pojos;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -24,6 +26,7 @@ public class Goal {
     private String goalName;
     @NonNull
     @Column(nullable = false)
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate date;
     @NonNull
     @Column(nullable = false)
@@ -37,6 +40,7 @@ public class Goal {
             joinColumns = @JoinColumn(name = "goal_id"),
             inverseJoinColumns = @JoinColumn(name = "workout_id")
     )
+    @JsonManagedReference(value = "goal-workouts")
     private List<Workout> workouts = new ArrayList<>();
 
 }
