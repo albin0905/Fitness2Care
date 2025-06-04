@@ -60,27 +60,29 @@ public class GoalController {
 
     @PostMapping("/addGoal")
     public ResponseEntity<Goal> addGoal(
-            @RequestBody Goal goal
+            @RequestBody Map<String, Object> payload
     ) {
+        try {
+            Goal goal = new Goal();
+            goal.setGoalName((String) payload.get("goalName"));
+            goal.setKcal(((Number) payload.get("kcal")).intValue());
+            goal.setDate(LocalDate.parse((String) payload.get("date")));
+            goal.setUserId(((Number) payload.get("userId")).intValue());
 
-        Optional<Goal> newGoal = Optional.of(goalRepository.save(goal));
+            Goal savedGoal = goalRepository.save(goal);
 
-        if(newGoal.isPresent()){
             URI location = ServletUriComponentsBuilder
                     .fromCurrentRequest()
                     .path("/{id}")
-                    .buildAndExpand(newGoal.get().getGoalId())
+                    .buildAndExpand(savedGoal.getGoalId())
                     .toUri();
 
-            log.info("POST: Neues Ziel wurde hinzugefügt");
-            log.info(String.valueOf(newGoal));
-
-            return ResponseEntity.created(location).body(newGoal.get());
+            return ResponseEntity.created(location).body(savedGoal);
+        } catch (Exception e) {
+            log.error("Error creating goal", e);
+            return ResponseEntity.badRequest().build();
         }
-
-        return ResponseEntity.status(HttpStatus.CONFLICT).build();
     }
-
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Goal> updateGoalKcal(
             @PathVariable Integer id,
@@ -172,6 +174,32 @@ public class GoalController {
             return ResponseEntity.ok(goal);
         } else {
             return ResponseEntity.notFound().build();
+        }
+    }
+
+    @DeleteMapping("/{goalId}/remove-workout/{workoutId}")
+    public ResponseEntity<Goal> removeWorkoutFromGoal(
+            @PathVariable Integer goalId,
+            @PathVariable Integer workoutId) {
+        try {
+            Optional<Goal> goalOpt = goalRepository.findById(goalId);
+            if (goalOpt.isEmpty()) {
+                return ResponseEntity.notFound().build();
+            }
+
+            Goal goal = goalOpt.get();
+            Optional<Workout> workoutToRemove = workoutRepository.findById(workoutId);
+            if (workoutToRemove.isEmpty()) {
+                return ResponseEntity.badRequest().build();
+            }
+
+            goal.getWorkouts().removeIf(w -> w.getWorkoutId().equals(workoutId));
+            goalRepository.save(goal);
+
+            return ResponseEntity.ok(goal);
+        } catch (Exception e) {
+            log.error("Error removing workout from goal", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
