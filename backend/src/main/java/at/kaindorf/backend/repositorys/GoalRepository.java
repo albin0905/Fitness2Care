@@ -13,6 +13,6 @@ public interface GoalRepository extends JpaRepository<Goal, Integer> {
 
     Goal getGoalByGoalId(Integer goalId);
 
-    @Query("SELECT g FROM Goal g WHERE g.userId = :memberId AND g.date >= :date ORDER BY g.date DESC LIMIT 1")
+    @Query("SELECT g FROM Goal g WHERE g.userId = :memberId AND g.date >= :date ORDER BY g.date ASC LIMIT 1")
     Goal findCurrentGoalByMemberIdAndDate(Long memberId, LocalDate date);
 }

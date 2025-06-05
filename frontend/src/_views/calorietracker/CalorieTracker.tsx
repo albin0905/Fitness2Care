@@ -16,19 +16,29 @@ const CalorieTracker = () => {
 
     const userId = member!.memberId;
 
+    const fetchCurrentGoal = async () => {
+        try {
+            const today = new Date().toISOString().split("T")[0];
+            const goalData = await CalorieTrackerService.getCurrentGoal(userId, today);
+            setGoal(goalData);
+        } catch (err) {
+            console.error("Ziel konnte nicht geladen werden", err);
+            setGoal(null);
+        }
+    };
+
     useEffect(() => {
-        const fetchGoal = async () => {
-            try {
-                const today = new Date().toISOString().split("T")[0];
-                const goalData = await CalorieTrackerService.getCurrentGoal(userId, today);
-                setGoal(goalData);
-            } catch (err) {
-                console.error("Ziel konnte nicht geladen werden", err);
-                setGoal(null);
-            }
+        fetchCurrentGoal();
+
+        const handleGoalChange = () => {
+            fetchCurrentGoal();
         };
 
-        fetchGoal();
+        window.addEventListener('goalChanged', handleGoalChange);
+
+        return () => {
+            window.removeEventListener('goalChanged', handleGoalChange);
+        };
     }, [userId]);
 
     const fetchProducts = async () => {
