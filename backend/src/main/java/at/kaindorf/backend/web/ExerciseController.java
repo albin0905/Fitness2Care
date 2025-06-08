@@ -24,7 +24,7 @@ public class ExerciseController {
 
     @GetMapping("/exercises")
     public ResponseEntity<List<Exercise>> exercise(){
-        List<Exercise> exercises = exerciseRepository.getExercice();
+        List<Exercise> exercises = exerciseRepository.getExercise();
 
         if(exercises != null){
             log.info("GET: Alle vorhandenen Exercises werden angezeigt");

@@ -9,7 +9,7 @@ import java.util.List;
 public interface ExerciseRepository extends JpaRepository<Exercise,Integer> {
 
     @Query("SELECT e FROM Exercise e")
-    List<Exercise> getExercice();
+    List<Exercise> getExercise();
 
     @Query("SELECT e FROM Exercise e WHERE e.exerciseName = ?1")
     Exercise getExerciseByExerciseNameName(String exerciseName);
