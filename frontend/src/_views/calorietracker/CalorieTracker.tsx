@@ -4,6 +4,7 @@ import { IGoal } from "../../_common/models/IGoal";
 import { useMemberContext } from "../../_common/context/MemberContext";
 import CalorieHistory from "./CalorieHistory";
 import { CalorieTrackerService } from '../../_components/services/CalorieTrackerService';
+import { Modal, Button } from 'react-bootstrap';
 
 const CalorieTracker = () => {
     const [products, setProducts] = useState<IProduct[]>([]);
@@ -12,6 +13,7 @@ const CalorieTracker = () => {
     const [goal, setGoal] = useState<IGoal | null>(null);
     const [selectedProduct, setSelectedProduct] = useState<IProduct | null>(null);
     const [gramInputs, setGramInputs] = useState<{[barcode: string]: number}>({});
+    const [showExceedModal, setShowExceedModal] = useState(false);
     const { member } = useMemberContext();
 
     const userId = member!.memberId;
@@ -69,6 +71,8 @@ const CalorieTracker = () => {
         const kcalToAdd = Math.round((product.kcal_100g * grams) / 100);
 
         try {
+            const willExceed = (goal.kcal - kcalToAdd) < 0;
+
             const consumedItem = {
                 id: `${Date.now()}-${product.barcode}`,
                 date: new Date().toISOString(),
@@ -90,15 +94,15 @@ const CalorieTracker = () => {
                 newHistory = [
                     {
                         date: new Date().toISOString(),
-                        initialKcal: goal.kcal + kcalToAdd,
+                        initialKcal: goal.kcal,
                         consumedKcal: 0,
-                        remainingKcal: goal.kcal + kcalToAdd
+                        remainingKcal: goal.kcal
                     },
                     {
                         date: new Date().toISOString(),
-                        initialKcal: goal.kcal + kcalToAdd,
+                        initialKcal: goal.kcal,
                         consumedKcal: kcalToAdd,
-                        remainingKcal: goal.kcal
+                        remainingKcal: goal.kcal - kcalToAdd
                     }
                 ];
             } else {
@@ -136,9 +140,14 @@ const CalorieTracker = () => {
                 goal.kcal - kcalToAdd
             );
 
-            alert(`✅ ${kcalToAdd} kcal (${grams}g) hinzugefügt`);
             setGoal(updatedGoal);
             window.dispatchEvent(new Event('storage'));
+
+            if (willExceed) {
+                setShowExceedModal(true);
+            } else {
+                alert(`✅ ${kcalToAdd} kcal (${grams}g) hinzugefügt`);
+            }
         } catch (err) {
             if (err instanceof AxiosError) {
                 console.error("Fehlerdaten:", err.response?.data);
@@ -165,6 +174,22 @@ const CalorieTracker = () => {
         <div style={{ padding: "20px", maxWidth: "1200px", margin: "0 auto" }}>
             <h2 style={{ color: "#2c3e50", marginBottom: "20px" }}>🎯 Aktuelles Ziel</h2>
 
+            <Modal show={showExceedModal} onHide={() => setShowExceedModal(false)}>
+                <Modal.Header closeButton>
+                    <Modal.Title>⚠️ Warnung</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <p>Sie haben Ihr tägliches Kalorienziel überschritten!</p>
+                    <p>Bitte passen Sie Ihre Ernährung an oder setzen Sie ein neues Ziel.</p>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="warning" onClick={() => setShowExceedModal(false)}>
+                        Verstanden
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+
+            {/* Nur EINMAL das Ziel anzeigen - das Duplikat wurde entfernt */}
             {goal ? (
                 <div style={{
                     marginBottom: "20px",
@@ -175,7 +200,14 @@ const CalorieTracker = () => {
                 }}>
                     <p><strong>Name:</strong> {goal.goalName}</p>
                     <p><strong>Datum:</strong> {new Date(goal.date).toLocaleDateString()}</p>
-                    <p><strong>Noch zur Verfügung stehende Kalorien:</strong> <span style={{ fontWeight: "bold" }}>{goal.kcal} kcal</span></p>
+                    <p><strong>Noch zur Verfügung stehende Kalorien:</strong>
+                        <span style={{
+                            fontWeight: "bold",
+                            color: goal.kcal < 0 ? "red" : "inherit"
+                        }}>
+                            {goal.kcal} kcal
+                        </span>
+                    </p>
                 </div>
             ) : (
                 <p style={{ color: "#7f8c8d" }}>Kein Ziel gefunden.</p>

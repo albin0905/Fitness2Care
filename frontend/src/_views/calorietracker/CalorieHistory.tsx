@@ -12,35 +12,34 @@ const CalorieHistory: React.FC<ICalorieHistoryProps> = ({ goalId, currentGoal, s
 
     React.useEffect(() => {
         const loadData = () => {
-
             const storedHistory = localStorage.getItem('calorieHistory');
+            const storedConsumed = localStorage.getItem('consumedItems');
 
             if (storedHistory) {
                 const parsedHistory = JSON.parse(storedHistory);
                 const goalHistory = parsedHistory[goalId] || [];
                 setHistory(goalHistory);
 
-                if (goalHistory.length > 0) {
-                    setInitialKcal(goalHistory[0].initialKcal);
-                }
+                const newInitialKcal = goalHistory.length > 0
+                    ? goalHistory[0].initialKcal
+                    : currentGoal?.kcal || 0;
+                setInitialKcal(newInitialKcal);
             }
 
-            const storedConsumed = localStorage.getItem('consumedItems');
-                if (storedConsumed) {
-                    const parsedConsumed = JSON.parse(storedConsumed);
-                    setConsumedItems(parsedConsumed[goalId] || []);
-                }
-            };
+            if (storedConsumed) {
+                const parsedConsumed = JSON.parse(storedConsumed);
+                setConsumedItems(parsedConsumed[goalId] || []);
+            }
+        };
 
-            loadData();
+        loadData();
+        const handleStorageChange = () => loadData();
+        window.addEventListener('storage', handleStorageChange);
 
-            const handleStorageChange = () => loadData();
-            window.addEventListener('storage', handleStorageChange);
-
-            return () => {
-                window.removeEventListener('storage', handleStorageChange);
-            };
-        }, [goalId]);
+        return () => {
+            window.removeEventListener('storage', handleStorageChange);
+        };
+    }, [goalId, currentGoal]);
 
     const removeConsumedItem = async (id: string) => {
         try {
@@ -120,7 +119,7 @@ const CalorieHistory: React.FC<ICalorieHistoryProps> = ({ goalId, currentGoal, s
                 >
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis dataKey="date" />
-                    <YAxis domain={[0, initialKcal * 1.1]} />
+                    <YAxis domain={[0, (dataMax: number) => Math.max(dataMax, initialKcal) * 1.1 ]} />
                     <Tooltip
                         formatter={(value: number) => [`${value} kcal`, 'Konsumiert']}
                         labelFormatter={(label) => `Datum: ${label}`}
@@ -137,7 +136,7 @@ const CalorieHistory: React.FC<ICalorieHistoryProps> = ({ goalId, currentGoal, s
                     />
                     <ReferenceLine
                         y={initialKcal}
-                        label="Tageslimit"
+                        label={{ value: 'Tageslimit', position: 'top' }}
                         stroke="red"
                         strokeDasharray="3 3"
                     />
