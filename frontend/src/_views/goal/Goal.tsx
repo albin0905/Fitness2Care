@@ -2,12 +2,31 @@ import React, { useEffect, useState } from "react";
 import "./Goal.css";
 import { useMemberContext } from "../../_common/context/MemberContext";
 import { GoalService } from "../../_components/services/GoalService";
-import {IGoal} from "../../_common/models/IGoal";
+import { IGoal } from "../../_common/models/IGoal";
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import AddIcon from '@mui/icons-material/Add';
 import CancelIcon from '@mui/icons-material/Cancel';
 import SaveIcon from '@mui/icons-material/Save';
+import { Bar } from 'react-chartjs-2';
+import {
+    Chart as ChartJS,
+    CategoryScale,
+    LinearScale,
+    BarElement,
+    Title,
+    Tooltip,
+    Legend,
+} from 'chart.js';
+
+ChartJS.register(
+    CategoryScale,
+    LinearScale,
+    BarElement,
+    Title,
+    Tooltip,
+    Legend
+);
 
 const Goal = () => {
     const { member } = useMemberContext();
@@ -17,7 +36,6 @@ const Goal = () => {
     const [error, setError] = useState<string | null>(null);
     const [showWorkoutSelection, setShowWorkoutSelection] = useState(false);
     const [successMessage, setSuccessMessage] = useState(false);
-
     const [showModal, setShowModal] = useState(false);
     const [showEditModal, setShowEditModal] = useState(false);
     const [newGoal, setNewGoal] = useState({ goalName: "", kcal: 0, date: "" });
@@ -149,6 +167,69 @@ const Goal = () => {
     const calculateTotalCalories = (exercises: IExercise[] = []) =>
         exercises.reduce((sum, ex) => sum + (ex.kcal || 0), 0);
 
+    const getWorkoutMinutesData = () => {
+        if (!selectedGoal || !selectedGoal.workouts || selectedGoal.workouts.length === 0) {
+            return null;
+        }
+
+        const workoutsByDate: Record<string, number> = {};
+
+        selectedGoal.workouts.forEach(workout => {
+            const date = new Date(workout.time).toLocaleDateString();
+            if (!workoutsByDate[date]) {
+                workoutsByDate[date] = 0;
+            }
+            workoutsByDate[date] += workout.time || 0;
+        });
+
+        const dates = Object.keys(workoutsByDate);
+        const minutes = Object.values(workoutsByDate);
+
+        return {
+            labels: dates,
+            datasets: [
+                {
+                    label: 'Workout-Minuten pro Tag',
+                    data: minutes,
+                    backgroundColor: 'rgba(75, 192, 192, 0.6)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1,
+                },
+            ],
+        };
+    };
+
+    const workoutMinutesData = getWorkoutMinutesData();
+
+    const chartOptions = {
+        responsive: true,
+        plugins: {
+            legend: {
+                position: 'top' as const,
+            },
+            title: {
+                display: true,
+                text: 'Workout-Minuten pro Tag',
+            },
+        },
+        scales: {
+            y: {
+                beginAtZero: true,
+                max: 300,
+                title: {
+                    display: true,
+                    text: 'Minuten',
+                },
+            },
+            x: {
+                title: {
+                    display: true,
+                    text: 'Datum',
+                },
+            },
+        },
+    };
+
     if (!member) {
         return <div>Bitte zuerst einloggen.</div>;
     }
@@ -223,7 +304,6 @@ const Goal = () => {
                     </div>
                 </div>
 
-                {/* Ziel Details */}
                 <div className="col-md-6 mb-4">
                     <div className="card">
                         <div className="card-header">
@@ -246,33 +326,44 @@ const Goal = () => {
                                 <>
                                     <h5>Zugeordnete Workouts:</h5>
                                     {selectedGoal.workouts?.length > 0 ? (
-                                        <table className="table table-bordered">
-                                            <thead>
-                                            <tr>
-                                                <th>Name</th>
-                                                <th>Dauer</th>
-                                                <th>Kalorien</th>
-                                                <th>Aktion</th>
-                                            </tr>
-                                            </thead>
-                                            <tbody>
-                                            {selectedGoal.workouts.map((workout) => (
-                                                <tr key={workout.workoutId}>
-                                                    <td>{workout.workoutName}</td>
-                                                    <td>{workout.time}</td>
-                                                    <td>{calculateTotalCalories(workout.exercises)} kcal</td>
-                                                    <td>
-                                                        <button
-                                                            className="btn btn-sm btn-outline-danger"
-                                                            onClick={() => handleRemoveWorkout(workout.workoutId)}
-                                                        >
-                                                            <DeleteForeverIcon/>
-                                                        </button>
-                                                    </td>
+                                        <>
+                                            <table className="table table-bordered">
+                                                <thead>
+                                                <tr>
+                                                    <th>Name</th>
+                                                    <th>Dauer</th>
+                                                    <th>Kalorien</th>
+                                                    <th>Aktion</th>
                                                 </tr>
-                                            ))}
-                                            </tbody>
-                                        </table>
+                                                </thead>
+                                                <tbody>
+                                                {selectedGoal.workouts.map((workout) => (
+                                                    <tr key={workout.workoutId}>
+                                                        <td>{workout.workoutName}</td>
+                                                        <td>{workout.time} Minuten</td>
+                                                        <td>{calculateTotalCalories(workout.exercises)} kcal</td>
+                                                        <td>
+                                                            <button
+                                                                className="btn btn-sm btn-outline-danger"
+                                                                onClick={() => handleRemoveWorkout(workout.workoutId)}
+                                                            >
+                                                                <DeleteForeverIcon/>
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                ))}
+                                                </tbody>
+                                            </table>
+
+                                            <div className="mt-4">
+                                                <h5>Workout-Statistik</h5>
+                                                {workoutMinutesData ? (
+                                                    <Bar data={workoutMinutesData} options={chartOptions} />
+                                                ) : (
+                                                    <p>Keine Daten für das Diagramm verfügbar.</p>
+                                                )}
+                                            </div>
+                                        </>
                                     ) : (
                                         <p>Keine Workouts zugeordnet.</p>
                                     )}
@@ -419,7 +510,7 @@ const Goal = () => {
                                 </div>
                             </div>
                             <div className="modal-footer">
-                                <button className="btn btn-outline-success" onClick={() => setShowEditModal(false)}>
+                                <button className="btn btn-outline-danger" onClick={() => setShowEditModal(false)}>
                                     <CancelIcon/> Abbrechen
                                 </button>
                                 <button className="btn btn-outline-success" onClick={handleEditGoal}>
