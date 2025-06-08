@@ -6,8 +6,6 @@ import {IGoal} from "../../_common/models/IGoal";
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import AddIcon from '@mui/icons-material/Add';
-import CloseIcon from '@mui/icons-material/Close';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import CancelIcon from '@mui/icons-material/Cancel';
 import SaveIcon from '@mui/icons-material/Save';
 
@@ -161,7 +159,6 @@ const Goal = () => {
             {error && <p className="text-danger">{error}</p>}
 
             <div className="row">
-                {/* Ziele Liste */}
                 <div className="col-md-6 mb-4">
                     <div className="card">
                         <div className="card-header d-flex justify-content-between align-items-center">
@@ -319,7 +316,6 @@ const Goal = () => {
                 </div>
             </div>
 
-            {/* MODAL für neues Ziel */}
             {showModal && (
                 <div className="modal d-block" tabIndex={-1}>
                     <div className="modal-dialog">
@@ -379,7 +375,6 @@ const Goal = () => {
                 </div>
             )}
 
-            {/* MODAL für Ziel bearbeiten */}
             {showEditModal && editGoal && (
                 <div className="modal d-block" tabIndex={-1}>
                     <div className="modal-dialog">

@@ -4,7 +4,7 @@ const Exercise = () => {
     const [exercises, setExercises] = useState<IExercise[]>([]);
 
     useEffect(() => {
-        fetch('http://localhost:8080/exercise/exercises') // ← passe ggf. die URL an
+        fetch('http://localhost:8080/exercise/exercises')
             .then(res => res.json())
             .then(data => setExercises(data))
             .catch(err => console.error("Fehler beim Laden der Exercises:", err));
