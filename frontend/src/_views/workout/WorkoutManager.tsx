@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
+import AddIcon from '@mui/icons-material/Add';
+import CancelIcon from '@mui/icons-material/Cancel';
 
 const WorkoutManager = () => {
     const [workout, setWorkout] = useState({
@@ -92,11 +94,11 @@ const WorkoutManager = () => {
                 </div>
 
                 <div className="d-flex gap-2">
-                    <button className="btn btn-primary" type="submit">
-                        {workoutId ? "Aktualisieren" : "Erstellen"}
+                    <button className="btn btn-outline-success">
+                        <AddIcon/> Erstellen
                     </button>
-                    <button className="btn btn-secondary" type="button" onClick={() => navigate("/workout")}>
-                        Abbrechen
+                    <button className="btn btn-outline-danger" type="button" onClick={() => navigate("/workout")}>
+                        <CancelIcon/> Abbrechen
                     </button>
                 </div>
             </form>

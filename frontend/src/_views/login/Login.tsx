@@ -51,7 +51,7 @@ const Login = () => {
                 phone: form.phone,
                 weight: parseInt(form.weight, 10),
             });
-            console.log("Registrierung erfolgreich:", response.data); // 👈 hier prüfen: ist `phone` enthalten?
+            console.log("Registrierung erfolgreich:", response.data);
             setMember(response.data);
             navigate("/dashboard");
         } catch (err) {
@@ -66,7 +66,6 @@ const Login = () => {
 
     return (
         <div className="auth-container">
-            {/* Linke Seite: Formular */}
             <div className="auth-form">
                 <div className="card p-4 shadow" style={{ width: "400px" }}>
                     <h3 className="text-center mb-3">

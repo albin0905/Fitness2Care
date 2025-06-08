@@ -2,14 +2,6 @@ import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 
-interface IExercise {
-    exerciseId: number;
-    exerciseName: string;
-    exerciseLevel: string;
-    bodyPart: string;
-    imageURL: string;
-}
-
 const ExerciseDetail = () => {
     const { id } = useParams();
     const [exercise, setExercise] = useState<IExercise | null>(null);

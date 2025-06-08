@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useMemberContext } from "../../_common/context/MemberContext";
 import axios from "axios";
+import SaveIcon from '@mui/icons-material/Save';
 
 const UserAccount = () => {
     const { member, setMember } = useMemberContext();
@@ -22,7 +23,7 @@ const UserAccount = () => {
         if (!member) return;
 
         const updatedMember = {
-            memberId: member.memberId, // wichtig: memberId, nicht id!
+            memberId: member.memberId,
             ...formData,
         };
 
@@ -88,8 +89,7 @@ const UserAccount = () => {
                     <label className="form-label">Passwort ändern</label>
                     <input type="password" name="password" className="form-control" value={formData.password} onChange={handleChange} />
                 </div>
-
-                <button type="button" className="btn btn-primary" onClick={handleSave}>Speichern</button>
+                <button type="button" className="btn btn-outline-success" onClick={handleSave}><SaveIcon/> Speichern</button>
             </form>
         </div>
     );

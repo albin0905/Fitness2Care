@@ -13,7 +13,6 @@ import { LanguageProvider } from "./_common/context/LanguageContext";
 import { WorkoutProvider } from "./_common/context/WorkoutContext";
 import Exercise from "./_views/exercise/Exercise";
 import { ExerciseProvider } from "./_common/context/ExerciseContext";
-import ExerciseDetail from "./_views/exercise/exerciseDetail/ExerciseDetail";
 import WorkoutDetail from "./_views/workout/workoutDetail/WorkoutDetail";
 import WorkoutManager from "./_views/workout/WorkoutManager";
 

@@ -2,6 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ExerciseService } from '../../../_components/services/ExerciseService';
 import { WorkoutService } from '../../../_components/services/WorkoutService';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
+import AddIcon from '@mui/icons-material/Add';
+import CloseIcon from '@mui/icons-material/Close';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import CancelIcon from '@mui/icons-material/Cancel';
+import SaveIcon from '@mui/icons-material/Save';
 
 const WorkoutDetail = () => {
     const { workoutId } = useParams<{ workoutId: string }>();
@@ -152,33 +159,33 @@ const WorkoutDetail = () => {
             <h2 className="mb-4">{workout?.workoutName} – Details</h2>
 
             <div className="d-flex justify-content-between mb-4">
-                <button className="btn btn-secondary" onClick={() => navigate('/workout')}>
-                    Zurück zu allen Workouts
+                <button className="btn btn-dark" onClick={() => navigate('/workout')}>
+                    <ArrowBackIcon/> Zurück zu allen Workouts
                 </button>
 
                 <div>
                     {!editMode ? (
-                        <button className="btn btn-primary me-2" onClick={toggleEditMode}>
-                            Workout bearbeiten
+                        <button className="btn btn-outline-primary me-2" onClick={toggleEditMode}>
+                            <EditIcon />
                         </button>
                     ) : (
                         <>
-                            <button className="btn btn-success me-2" onClick={saveChanges}>
-                                Änderungen speichern
+                            <button className="btn btn-outline-success me-2" onClick={saveChanges}>
+                                <SaveIcon/> Änderungen speichern
                             </button>
-                            <button className="btn btn-danger me-2" onClick={toggleEditMode}>
-                                Abbrechen
+                            <button className="btn btn-outline-danger me-2" onClick={toggleEditMode}>
+                                <CancelIcon/> Abbrechen
                             </button>
                         </>
                     )}
                     <button
-                        className="btn btn-info"
+                        className="btn btn-success"
                         onClick={() => {
                             setCurrentExercise(null);
                             setShowExerciseModal(true);
                         }}
                     >
-                        + Neue Übung
+                        <AddIcon />
                     </button>
                 </div>
 
@@ -236,25 +243,25 @@ const WorkoutDetail = () => {
                         <td>{ex.kcal} kcal</td>
                         <td>
                             <button
-                                className="btn btn-warning btn-sm"
+                                className="btn btn-outline-primary btn-sm"
                                 onClick={(e) => {
                                     e.stopPropagation();
                                     setCurrentExercise(ex);
                                     setShowExerciseModal(true);
                                 }}
                             >
-                                Bearbeiten
+                                <EditIcon />
                             </button>
                         </td>
                         <td>
                             <button
-                                className="btn btn-danger btn-sm"
+                                className="btn btn-outline-danger btn-sm"
                                 onClick={(e) => {
                                     e.stopPropagation();
                                     handleDeleteExercise(ex.exerciseId);
                                 }}
                             >
-                                Löschen
+                                <DeleteForeverIcon />
                             </button>
                         </td>
                     </tr>
@@ -443,7 +450,7 @@ const WorkoutDetail = () => {
                                 )}
                             </div>
                             <div className="modal-footer">
-                                <button className="btn btn-secondary" onClick={closeDetailModal}>Schließen</button>
+                                <CloseIcon className="btn btn-secondary" onClick={closeDetailModal}>Schließen</CloseIcon>
                             </div>
                         </div>
                     </div>

@@ -1,6 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
+import AddIcon from '@mui/icons-material/Add';
+import CloseIcon from '@mui/icons-material/Close';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import CancelIcon from '@mui/icons-material/Cancel';
+import SaveIcon from '@mui/icons-material/Save';
 
 const Workout = () => {
     const [workouts, setWorkouts] = useState<IWorkout[]>([]);
@@ -39,10 +46,10 @@ const Workout = () => {
             <div className="d-flex justify-content-between align-items-center mb-4">
                 <h2>Workouts</h2>
                 <button
-                    className="btn btn-success"
+                    className="btn btn-outline-success"
                     onClick={() => navigate("/workout/manage")}
                 >
-                    Workout hinzufügen
+                    <AddIcon/>
                 </button>
             </div>
             <table className="table table-hover">
@@ -69,21 +76,21 @@ const Workout = () => {
                         <td>{workout.description}</td>
                         <td>
                             <button
-                                className="btn btn-primary btn-sm"
+                                className="btn btn-outline-primary btn-sm"
                                 onClick={(e) => {
                                     e.stopPropagation();
                                     navigate(`/workout/manage/${workout.workoutId}`);
                                 }}
                             >
-                                Bearbeiten
+                                <EditIcon/>
                             </button>
                         </td>
                         <td>
                             <button
-                                className="btn btn-danger btn-sm"
+                                className="btn btn-outline-danger btn-sm"
                                 onClick={(e) => handleDelete(workout.workoutId, e)}
                             >
-                                Löschen
+                                <DeleteForeverIcon/>
                             </button>
                         </td>
                     </tr>

@@ -59,9 +59,6 @@ const MenuBar = () => {
                     <Link className={`nav-link text-dark fs-5 ${location.pathname === "/calorietracker" ? "fw-bold" : ""}`} to="/calorietracker">
                         {texts.calorieTracker}
                     </Link>
-                    <Link className={`nav-link text-dark fs-5 ${location.pathname === "/exercise" ? "fw-bold" : ""}`} to="/exercise">
-                        Exercise
-                    </Link>
                 </li>
             </ul>
 
