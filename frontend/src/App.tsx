@@ -15,6 +15,7 @@ import Exercise from "./_views/exercise/Exercise";
 import { ExerciseProvider } from "./_common/context/ExerciseContext";
 import ExerciseDetail from "./_views/exercise/exerciseDetail/ExerciseDetail";
 import WorkoutDetail from "./_views/workout/workoutDetail/WorkoutDetail";
+import WorkoutManager from "./_views/workout/WorkoutManager";
 
 function App() {
     return (
@@ -32,6 +33,8 @@ function App() {
                                     <Route path="/goal" element={<Goal />} />
                                     <Route path="/calorietracker" element={<CalorieTracker />} />
                                     <Route path="/account" element={<UserAccount />} />
+                                    <Route path="/workout/manage" element={<WorkoutManager />} />
+                                    <Route path="/workout/manage/:workoutId" element={<WorkoutManager />} />
                                     <Route path="/exercise" element={<Exercise />} />
                                     <Route path="/workout/details/id/:workoutId" element={<WorkoutDetail />} />
                                 </Route>

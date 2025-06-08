@@ -16,14 +16,35 @@ const Workout = () => {
             });
     }, []);
 
-    // Funktion zur Berechnung der Gesamtkalorien eines Workouts
     const calculateTotalCalories = (exercises: IExercise[] = []) => {
         return exercises.reduce((sum, ex) => sum + (ex.kcal || 0), 0);
     };
 
+    const handleDelete = async (workoutId: number, e: React.MouseEvent) => {
+        e.stopPropagation();
+        const confirmDelete = window.confirm("Willst du dieses Workout wirklich löschen?");
+        if (!confirmDelete) return;
+
+        try {
+            await axios.delete(`http://localhost:8080/workout/${workoutId}`);
+            setWorkouts(workouts.filter(w => w.workoutId !== workoutId));
+            alert("Workout gelöscht!");
+        } catch (error) {
+            console.error("Fehler beim Löschen:", error);
+        }
+    };
+
     return (
         <div className="container p-4">
-            <h2 className="mb-4">Workouts</h2>
+            <div className="d-flex justify-content-between align-items-center mb-4">
+                <h2>Workouts</h2>
+                <button
+                    className="btn btn-success"
+                    onClick={() => navigate("/workout/manage")}
+                >
+                    Workout hinzufügen
+                </button>
+            </div>
             <table className="table table-hover">
                 <thead>
                 <tr>
@@ -31,10 +52,12 @@ const Workout = () => {
                     <th>Dauer (Minuten)</th>
                     <th>Kalorien</th>
                     <th>Beschreibung</th>
+                    <th>Bearbeiten</th>
+                    <th>Löschen</th>
                 </tr>
                 </thead>
                 <tbody>
-                {workouts.map((workout:IWorkout) => (
+                {workouts.map((workout: IWorkout) => (
                     <tr
                         key={workout.workoutId}
                         onClick={() => navigate(`/workout/details/id/${workout.workoutId}`)}
@@ -44,6 +67,25 @@ const Workout = () => {
                         <td>{workout.time}</td>
                         <td>{calculateTotalCalories(workout.exercises)} kcal</td>
                         <td>{workout.description}</td>
+                        <td>
+                            <button
+                                className="btn btn-primary btn-sm"
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    navigate(`/workout/manage/${workout.workoutId}`);
+                                }}
+                            >
+                                Bearbeiten
+                            </button>
+                        </td>
+                        <td>
+                            <button
+                                className="btn btn-danger btn-sm"
+                                onClick={(e) => handleDelete(workout.workoutId, e)}
+                            >
+                                Löschen
+                            </button>
+                        </td>
                     </tr>
                 ))}
                 </tbody>

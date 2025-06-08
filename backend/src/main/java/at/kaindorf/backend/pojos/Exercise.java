@@ -38,6 +38,7 @@ public class Exercise {
     private String description;
     @ManyToMany(mappedBy = "exercises")
     @ToString.Exclude
-    @JsonBackReference(value = "workout-exercises")
+    //@JsonBackReference(value = "workout-exercises")
+    @JsonIgnore
     private List<Workout> workouts;
 }
