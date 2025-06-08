@@ -5,6 +5,7 @@ import { useMemberContext } from "../../_common/context/MemberContext";
 import CalorieHistory from "./CalorieHistory";
 import { CalorieTrackerService } from '../../_components/services/CalorieTrackerService';
 import { Modal, Button } from 'react-bootstrap';
+import AddIcon from '@mui/icons-material/Add';
 
 const CalorieTracker = () => {
     const [products, setProducts] = useState<IProduct[]>([]);
@@ -268,22 +269,29 @@ const CalorieTracker = () => {
                                         }}
                                     />
                                 </td>
-                                <td style={{ padding: "10px" }}>
+                                <td style={{
+                                    padding: "10px",
+                                    textAlign: "center",
+                                    display: "flex",
+                                    justifyContent: "center",
+                                    alignItems: "center",
+                                    height: "100%"
+                                }}>
                                     <button
+                                        className="btn btn-sm btn-outline-success"
+                                        style={{
+                                            display: "flex",
+                                            justifyContent: "center",
+                                            alignItems: "center",
+                                            padding: "8px",
+                                            margin: "0 auto"
+                                        }}
                                         onClick={() => {
                                             setSelectedProduct(product);
                                             addCaloriesToGoal(product);
                                         }}
-                                        style={{
-                                            padding: "6px 12px",
-                                            backgroundColor: "#3498db",
-                                            color: "white",
-                                            border: "none",
-                                            borderRadius: "4px",
-                                            cursor: "pointer"
-                                        }}
                                     >
-                                        ➕ Hinzufügen
+                                        <AddIcon style={{ fontSize: "1.2rem" }} />
                                     </button>
                                 </td>
                             </tr>

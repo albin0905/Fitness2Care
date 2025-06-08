@@ -3,6 +3,13 @@ import "./Goal.css";
 import { useMemberContext } from "../../_common/context/MemberContext";
 import { GoalService } from "../../_components/services/GoalService";
 import {IGoal} from "../../_common/models/IGoal";
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
+import AddIcon from '@mui/icons-material/Add';
+import CloseIcon from '@mui/icons-material/Close';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import CancelIcon from '@mui/icons-material/Cancel';
+import SaveIcon from '@mui/icons-material/Save';
 
 const Goal = () => {
     const { member } = useMemberContext();
@@ -160,12 +167,11 @@ const Goal = () => {
                         <div className="card-header d-flex justify-content-between align-items-center">
                             <span>Meine Ziele</span>
                             <button
-                                className="btn btn-success btn-sm rounded-circle"
-                                style={{ width: "32px", height: "32px", padding: 0, fontSize: "20px" }}
+                                className="btn btn-success"
                                 title="Ziel hinzufügen"
                                 onClick={() => setShowModal(true)}
                             >
-                                +
+                                <AddIcon/>
                             </button>
                         </div>
                         <div className="card-body">
@@ -199,16 +205,16 @@ const Goal = () => {
                                                             setShowEditModal(true);
                                                         }}
                                                     >
-                                                        Bearbeiten
+                                                        <EditIcon/>
                                                     </button>
                                                     <button
-                                                        className="btn btn-sm btn-danger"
+                                                        className="btn btn-sm btn-outline-danger"
                                                         onClick={(e) => {
                                                             e.stopPropagation();
                                                             handleDeleteGoal(goal.goalId);
                                                         }}
                                                     >
-                                                        Löschen
+                                                        <DeleteForeverIcon/>
                                                     </button>
                                                 </div>
                                             </div>
@@ -260,10 +266,10 @@ const Goal = () => {
                                                     <td>{calculateTotalCalories(workout.exercises)} kcal</td>
                                                     <td>
                                                         <button
-                                                            className="btn btn-sm btn-danger"
+                                                            className="btn btn-sm btn-outline-danger"
                                                             onClick={() => handleRemoveWorkout(workout.workoutId)}
                                                         >
-                                                            Löschen
+                                                            <DeleteForeverIcon/>
                                                         </button>
                                                     </td>
                                                 </tr>
@@ -274,7 +280,7 @@ const Goal = () => {
                                         <p>Keine Workouts zugeordnet.</p>
                                     )}
                                     <button
-                                        className="btn btn-secondary mt-3"
+                                        className="btn btn-outline-dark mt-3"
                                         onClick={() => setShowWorkoutSelection(true)}
                                     >
                                         Workout auswählen
@@ -361,11 +367,11 @@ const Goal = () => {
                                 </div>
                             </div>
                             <div className="modal-footer">
-                                <button className="btn btn-secondary" onClick={() => setShowModal(false)}>
-                                    Abbrechen
+                                <button className="btn btn-outline-danger" onClick={() => setShowModal(false)}>
+                                    <CancelIcon/> Abbrechen
                                 </button>
-                                <button className="btn btn-primary" onClick={handleCreateNewGoal}>
-                                    Speichern
+                                <button className="btn btn-outline-success" onClick={handleCreateNewGoal}>
+                                    <SaveIcon/> Speichern
                                 </button>
                             </div>
                         </div>
@@ -418,11 +424,11 @@ const Goal = () => {
                                 </div>
                             </div>
                             <div className="modal-footer">
-                                <button className="btn btn-secondary" onClick={() => setShowEditModal(false)}>
-                                    Abbrechen
+                                <button className="btn btn-outline-success" onClick={() => setShowEditModal(false)}>
+                                    <CancelIcon/> Abbrechen
                                 </button>
-                                <button className="btn btn-primary" onClick={handleEditGoal}>
-                                    Speichern
+                                <button className="btn btn-outline-success" onClick={handleEditGoal}>
+                                    <SaveIcon/> Speichern
                                 </button>
                             </div>
                         </div>
