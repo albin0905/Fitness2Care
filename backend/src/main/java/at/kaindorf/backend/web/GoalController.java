@@ -98,7 +98,6 @@ public class GoalController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteGoal(
             @PathVariable Integer id)

@@ -20,7 +20,6 @@ const MenuBar = () => {
         <div className="bg-white text-dark vh-100 p-3 shadow d-flex flex-column align-items-center"
              style={{ width: "250px", position: "fixed", left: 0, top: 0 }}>
 
-            {/* Logo */}
             <div className="text-center mb-3">
                 <img
                     src="/Fitness2Care_Logo.png"
@@ -30,7 +29,6 @@ const MenuBar = () => {
                 />
             </div>
 
-            {/* Language Selector mit Bootstrap */}
             <div className="mb-3 w-100">
                 <label htmlFor="languageSelect" className="form-label text-center w-100 fw-bold"> </label>
                 <select
@@ -44,7 +42,6 @@ const MenuBar = () => {
                 </select>
             </div>
 
-            {/* Navigation */}
             <ul className="nav flex-column w-100 text-center flex-grow-1">
                 <li className="nav-item">
                     <Link className={`nav-link text-dark fs-5 ${location.pathname === "/dashboard" ? "fw-bold" : ""}`} to="/dashboard">

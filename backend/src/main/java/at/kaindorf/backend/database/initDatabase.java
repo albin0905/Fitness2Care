@@ -83,31 +83,6 @@ public class initDatabase implements ApplicationRunner {
         }
     }
 
-    public void importMembers(){
-        Member member1 = new Member();
-        member1.setFirstName("David");
-        member1.setLastName("Fink");
-        member1.setEmail("findaa21@htl-kaindorf.at");
-        member1.setPassword("1234");
-        member1.setPhone("+43 676 3075989");
-        member1.setWeight(90);
-
-        Member member2 = new Member();
-        member2.setFirstName("Albin");
-        member2.setLastName("Bajrami");
-        member2.setEmail("bajala21@htl-kaindorf.at");
-        member2.setPassword("1234");
-        member2.setPhone("+43 676 9289502");
-        member2.setWeight(75);
-
-        List<Member> members = new ArrayList<>();
-        members.add(member1);
-        members.add(member2);
-
-        memberRepository.saveAll(members);
-    }
-
-
     @Override
     public void run(ApplicationArguments args) throws Exception {
 

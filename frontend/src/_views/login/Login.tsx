@@ -156,7 +156,6 @@ const Login = () => {
                 </div>
             </div>
 
-            {/* Rechte Seite: Bild & Text */}
             <div className="auth-image">
                 {!isRegisterMode ? (
                     <>

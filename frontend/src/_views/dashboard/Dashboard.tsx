@@ -1,13 +1,11 @@
 import React from "react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 
-// Typdefinition für die Daten
 interface ChartData {
     year: string;
     value: number;
 }
 
-// Typdefinition für die ChartCard-Props
 interface ChartCardProps {
     title: string;
     data: ChartData[];
@@ -38,7 +36,6 @@ const Dashboard = () => {
     );
 };
 
-// Jetzt mit expliziten Typen für Props
 const ChartCard: React.FC<ChartCardProps> = ({ title, data }) => {
     return (
         <div className="col-md-6 mb-4">

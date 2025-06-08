@@ -189,7 +189,6 @@ const CalorieTracker = () => {
                 </Modal.Footer>
             </Modal>
 
-            {/* Nur EINMAL das Ziel anzeigen - das Duplikat wurde entfernt */}
             {goal ? (
                 <div style={{
                     marginBottom: "20px",
