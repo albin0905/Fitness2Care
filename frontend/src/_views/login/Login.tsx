@@ -79,6 +79,7 @@ const Login = () => {
                                 <label className="form-label">Vorname</label>
                                 <input
                                     type="text"
+                                    placeholder="Max"
                                     className="form-control"
                                     name="firstName"
                                     value={form.firstName}
@@ -89,6 +90,7 @@ const Login = () => {
                                 <label className="form-label">Nachname</label>
                                 <input
                                     type="text"
+                                    placeholder="Mustermann"
                                     className="form-control"
                                     name="lastName"
                                     value={form.lastName}
@@ -101,6 +103,7 @@ const Login = () => {
                                     type="text"
                                     className="form-control"
                                     name="phone"
+                                    placeholder="0123456789"
                                     value={form.phone}
                                     onChange={handleChange}
                                 />
@@ -111,6 +114,7 @@ const Login = () => {
                                     type="number"
                                     className="form-control"
                                     name="weight"
+                                    placeholder="80"
                                     value={form.weight}
                                     onChange={handleChange}
                                 />
@@ -124,6 +128,7 @@ const Login = () => {
                             type="email"
                             className="form-control"
                             name="email"
+                            placeholder="max.musterman@gmail.com"
                             value={form.email}
                             onChange={handleChange}
                         />
@@ -134,6 +139,7 @@ const Login = () => {
                             type="password"
                             className="form-control"
                             name="password"
+                            placeholder="********"
                             value={form.password}
                             onChange={handleChange}
                             onKeyDown={(e) => e.key === "Enter" && handleSubmit()}

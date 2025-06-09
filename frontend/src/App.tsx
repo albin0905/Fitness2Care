@@ -12,7 +12,6 @@ import UserAccount from "./_views/account/UserAccount";
 import { LanguageProvider } from "./_common/context/LanguageContext";
 import { WorkoutProvider } from "./_common/context/WorkoutContext";
 import Exercise from "./_views/exercise/Exercise";
-import { ExerciseProvider } from "./_common/context/ExerciseContext";
 import WorkoutDetail from "./_views/workout/workoutDetail/WorkoutDetail";
 import WorkoutManager from "./_views/workout/WorkoutManager";
 
@@ -21,7 +20,6 @@ function App() {
         <LanguageProvider>
             <WorkoutProvider>
                 <MemberProvider>
-                    <ExerciseProvider>
                         <BrowserRouter>
                             <Routes>
                                 <Route path="/" element={<Login />} />
@@ -39,7 +37,6 @@ function App() {
                                 </Route>
                             </Routes>
                         </BrowserRouter>
-                    </ExerciseProvider>
                 </MemberProvider>
             </WorkoutProvider>
         </LanguageProvider>
