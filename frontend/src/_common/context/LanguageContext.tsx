@@ -18,7 +18,10 @@ const texts = {
         account: 'Konto',
         logout: 'Abmelden',
         german: 'Deutsch',
-        english: 'Englisch'
+        english: 'Englisch',
+        lastGoal: 'Letztes Ziel',
+        goalStatistics: 'Zielstatistik',
+        calGoal: 'Kalorienziel',
     },
     en: {
         settings: 'Settings',
@@ -30,7 +33,10 @@ const texts = {
         account: 'Account',
         logout: 'Logout',
         german: 'German',
-        english: 'English'
+        english: 'English',
+        lastGoal: 'Last Goal',
+        goalStatistics: 'Goal Statistics',
+        calGoal: 'Calorie Goal',
     }
 };
 

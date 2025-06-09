@@ -24,6 +24,7 @@ const MenuBar = () => {
                 <img
                     src="/Fitness2Care_Logo.png"
                     alt="Logo"
+                    onClick={() => navigate("/dashboard")}
                     className="img-fluid"
                     style={{ maxWidth: "190px", height: "auto" }}
                 />
