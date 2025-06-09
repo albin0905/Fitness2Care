@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ReferenceLine } from 'recharts';
 import { ICalorieHistoryItem } from '../../_common/models/ICalorieHistoryItem';
 import axios from "axios";
@@ -6,39 +6,31 @@ import {IConsumedItem} from "../../_common/models/IConsumedItem";
 import {ICalorieHistoryProps} from "../../_common/models/ICalorieHistoryProps";
 
 const CalorieHistory: React.FC<ICalorieHistoryProps> = ({ goalId, currentGoal, setGoal }) => {
-    const [history, setHistory] = React.useState<ICalorieHistoryItem[]>([]);
-    const [consumedItems, setConsumedItems] = React.useState<IConsumedItem[]>([]);
-    const [initialKcal, setInitialKcal] = React.useState<number>(0);
+    const [history, setHistory] = useState<ICalorieHistoryItem[]>([]);
+    const [consumedItems, setConsumedItems] = useState<IConsumedItem[]>([]);
+    const [initialKcal, setInitialKcal] = useState<number>(0);
 
-    React.useEffect(() => {
-        const loadData = () => {
-            const storedHistory = localStorage.getItem('calorieHistory');
-            const storedConsumed = localStorage.getItem('consumedItems');
+    const loadData = () => {
+        const storedHistory = localStorage.getItem('calorieHistory');
+        const storedConsumed = localStorage.getItem('consumedItems');
 
-            if (storedHistory) {
-                const parsedHistory = JSON.parse(storedHistory);
-                const goalHistory = parsedHistory[goalId] || [];
-                setHistory(goalHistory);
+        if (storedHistory) {
+            const parsedHistory = JSON.parse(storedHistory);
+            const goalHistory = parsedHistory[goalId] || [];
+            setHistory(goalHistory);
 
-                const newInitialKcal = goalHistory.length > 0
-                    ? goalHistory[0].initialKcal
-                    : currentGoal?.kcal || 0;
-                setInitialKcal(newInitialKcal);
-            }
+            const newInitialKcal = goalHistory.length > 0 ? goalHistory[0].initialKcal : currentGoal?.kcal || 0;
+            setInitialKcal(newInitialKcal);
+        }
 
-            if (storedConsumed) {
-                const parsedConsumed = JSON.parse(storedConsumed);
-                setConsumedItems(parsedConsumed[goalId] || []);
-            }
-        };
+        if (storedConsumed) {
+            const parsedConsumed = JSON.parse(storedConsumed);
+            setConsumedItems(parsedConsumed[goalId] || []);
+        }
+    };
 
+    useEffect(() => {
         loadData();
-        const handleStorageChange = () => loadData();
-        window.addEventListener('storage', handleStorageChange);
-
-        return () => {
-            window.removeEventListener('storage', handleStorageChange);
-        };
     }, [goalId, currentGoal]);
 
     const removeConsumedItem = async (id: string) => {
@@ -54,7 +46,7 @@ const CalorieHistory: React.FC<ICalorieHistoryProps> = ({ goalId, currentGoal, s
             localStorage.setItem('consumedItems', JSON.stringify(allConsumed));
 
             const storedHistory = JSON.parse(localStorage.getItem('calorieHistory') || '{}');
-            const initialKcal = storedHistory[goalId]?.[0]?.initialKcal || currentGoal.kcal + removedItem.kcal;
+            const initialKcal = storedHistory[goalId][0].initialKcal;
 
             let runningTotal = 0;
             const newHistory = [{
@@ -64,38 +56,35 @@ const CalorieHistory: React.FC<ICalorieHistoryProps> = ({ goalId, currentGoal, s
                 remainingKcal: initialKcal
             }];
 
-            updatedItems
-                .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
-                .forEach(item => {
-                    runningTotal += item.kcal;
-                    newHistory.push({
-                        date: item.date,
-                        initialKcal,
-                        consumedKcal: runningTotal,
-                        remainingKcal: initialKcal - runningTotal
-                    });
-                });
+            updatedItems.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+                        .forEach(item => {
+                            runningTotal += item.kcal;
+                            newHistory.push({
+                                date: item.date,
+                                initialKcal,
+                                consumedKcal: runningTotal,
+                                remainingKcal: initialKcal - runningTotal
+                            });
+                        });
 
             storedHistory[goalId] = newHistory;
             localStorage.setItem('calorieHistory', JSON.stringify(storedHistory));
 
             const newKcal = currentGoal.kcal + removedItem.kcal;
-            const response = await axios.put(
-                `http://localhost:8080/goal/${goalId}`,
-                { kcal: newKcal },
-                { headers: { 'Content-Type': 'application/json' } }
+            const response = await axios.put(`http://localhost:8080/goal/${goalId}`,
+                                                    { kcal: newKcal },
+                                                    { headers: { 'Content-Type': 'application/json' } }
             );
 
             setGoal(response.data);
 
             window.dispatchEvent(new Event('storage'));
-            alert(`✅ ${removedItem.kcal} kcal wieder hinzugefügt`);
+            alert(`✅ ${removedItem.kcal} kcal wieder entfernt`);
         } catch (error) {
             console.error("Fehler beim Entfernen:", error);
             alert("❌ Fehler beim Entfernen des Eintrags");
         }
     };
-
 
     if (history.length === 0) {
         return <div style={{ marginTop: '20px', color: '#7f8c8d' }}>Noch keine Verlaufsdaten verfügbar.</div>;
@@ -111,35 +100,14 @@ const CalorieHistory: React.FC<ICalorieHistoryProps> = ({ goalId, currentGoal, s
         <div style={{ marginTop: '30px' }}>
             <h3 style={{ color: '#2c3e50', marginBottom: '15px' }}>📊 Kalorienverlauf</h3>
             <div style={{ backgroundColor: '#fff', padding: '20px', borderRadius: '8px', boxShadow: '0 2px 4px rgba(0,0,0,0.1)', marginBottom: '30px' }}>
-                <LineChart
-                    width={800}
-                    height={400}
-                    data={chartData}
-                    margin={{ top: 20, right: 30, left: 20, bottom: 20 }}
-                >
+                <LineChart width={800} height={400} data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis dataKey="date" />
                     <YAxis domain={[0, (dataMax: number) => Math.max(dataMax, initialKcal) * 1.1 ]} />
-                    <Tooltip
-                        formatter={(value: number) => [`${value} kcal`, 'Konsumiert']}
-                        labelFormatter={(label) => `Datum: ${label}`}
-                    />
+                    <Tooltip formatter={(value: number) => [`${value} kcal`, 'Konsumiert']} labelFormatter={(label) => `Datum: ${label}`}/>
                     <Legend />
-                    <Line
-                        type="monotone"
-                        dataKey="consumed"
-                        name="Konsumierte Kalorien"
-                        stroke="#8884d8"
-                        strokeWidth={2}
-                        dot={{ r: 4 }}
-                        activeDot={{ r: 6 }}
-                    />
-                    <ReferenceLine
-                        y={initialKcal}
-                        label={{ value: 'Tageslimit', position: 'top' }}
-                        stroke="red"
-                        strokeDasharray="3 3"
-                    />
+                    <Line type="monotone" dataKey="consumed" name="Konsumierte Kalorien" stroke="#8884d8" strokeWidth={2} dot={{ r: 4 }} activeDot={{ r: 6 }}/>
+                    <ReferenceLine y={initialKcal} label={{ value: 'Tageslimit', position: 'top' }} stroke="red" strokeDasharray="3 3"/>
                 </LineChart>
             </div>
 
@@ -148,13 +116,13 @@ const CalorieHistory: React.FC<ICalorieHistoryProps> = ({ goalId, currentGoal, s
                 {consumedItems.length > 0 ? (
                     <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                         <thead>
-                        <tr style={{ backgroundColor: '#f8f9fa' }}>
-                            <th style={{ padding: '10px', textAlign: 'left' }}>Datum</th>
-                            <th style={{ padding: '10px', textAlign: 'left' }}>Produkt</th>
-                            <th style={{ padding: '10px', textAlign: 'right' }}>Gramm</th>
-                            <th style={{ padding: '10px', textAlign: 'right' }}>Kalorien</th>
-                            <th style={{ padding: '10px', textAlign: 'center' }}>Aktion</th>
-                        </tr>
+                            <tr style={{ backgroundColor: '#f8f9fa' }}>
+                                <th style={{ padding: '10px', textAlign: 'left' }}>Datum</th>
+                                <th style={{ padding: '10px', textAlign: 'left' }}>Produkt</th>
+                                <th style={{ padding: '10px', textAlign: 'right' }}>Gramm</th>
+                                <th style={{ padding: '10px', textAlign: 'right' }}>Kalorien</th>
+                                <th style={{ padding: '10px', textAlign: 'center' }}>Aktion</th>
+                            </tr>
                         </thead>
                         <tbody>
                         {consumedItems.map(item => (
@@ -166,16 +134,8 @@ const CalorieHistory: React.FC<ICalorieHistoryProps> = ({ goalId, currentGoal, s
                                 <td style={{ padding: '10px', textAlign: 'center' }}>
                                     <button
                                         onClick={() => removeConsumedItem(item.id)}
-                                        style={{
-                                            background: 'none',
-                                            border: 'none',
-                                            color: '#ff4444',
-                                            cursor: 'pointer',
-                                            fontSize: '16px',
-                                            padding: '5px'
-                                        }}
-                                        title="Eintrag entfernen"
-                                    >
+                                        style={{background: 'none', border: 'none', color: '#ff4444', cursor: 'pointer', fontSize: '16px', padding: '5px'}}
+                                        title="Eintrag entfernen">
                                         ❌
                                     </button>
                                 </td>
