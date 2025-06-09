@@ -204,14 +204,14 @@ const CalorieTracker = () => {
                 <div style={{ overflowX: "auto", marginBottom: "20px" }}>
                     <table style={{width: "100%", borderCollapse: "collapse", boxShadow: "0 1px 3px rgba(0,0,0,0.1)"}}>
                         <thead>
-                        <tr style={{ backgroundColor: "#2c3e50", color: "white" }}>
-                            <th style={{ padding: "12px", textAlign: "left" }}>Barcode</th>
-                            <th style={{ padding: "12px", textAlign: "left" }}>Produktname</th>
-                            <th style={{ padding: "12px", textAlign: "left" }}>kcal / 100g</th>
-                            <th style={{ padding: "12px", textAlign: "left" }}>Zutaten</th>
-                            <th style={{ padding: "12px", textAlign: "left" }}>Gramm</th>
-                            <th style={{ padding: "12px", textAlign: "left" }}>Aktion</th>
-                        </tr>
+                            <tr style={{ backgroundColor: "#2c3e50", color: "white" }}>
+                                <th style={{ padding: "12px", textAlign: "left" }}>Barcode</th>
+                                <th style={{ padding: "12px", textAlign: "left" }}>Produktname</th>
+                                <th style={{ padding: "12px", textAlign: "left" }}>kcal / 100g</th>
+                                <th style={{ padding: "12px", textAlign: "left" }}>Zutaten</th>
+                                <th style={{ padding: "12px", textAlign: "left" }}>Gramm</th>
+                                <th style={{ padding: "12px", textAlign: "left" }}>Aktion</th>
+                            </tr>
                         </thead>
                         <tbody>
                         {products.slice(startIndex, endIndex).map((product: IProduct) => (
