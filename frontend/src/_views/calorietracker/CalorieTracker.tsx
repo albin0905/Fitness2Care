@@ -12,7 +12,6 @@ const CalorieTracker = () => {
     const [search, setSearch] = useState("");
     const [page, setPage] = useState(0);
     const [goal, setGoal] = useState<IGoal | null>(null);
-    const [selectedProduct, setSelectedProduct] = useState<IProduct | null>(null);
     const [gramInputs, setGramInputs] = useState<{[barcode: string]: number}>({});
     const [showExceedModal, setShowExceedModal] = useState(false);
     const { member } = useMemberContext();
@@ -229,7 +228,6 @@ const CalorieTracker = () => {
                                     <button className="btn btn-sm btn-outline-success"
                                         style={{display: "flex", justifyContent: "center", alignItems: "center", padding: "8px", margin: "0 auto"}}
                                         onClick={() => {
-                                            setSelectedProduct(product);
                                             addCaloriesToGoal(product);
                                         }}
                                     >
