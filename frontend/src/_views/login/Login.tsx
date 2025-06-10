@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../login/AuthPage.css";
 import { useMemberContext } from "../../_common/context/MemberContext";
+import {UserService} from "../../_components/services/UserService";
 
 const Login = () => {
     const [isRegisterMode, setIsRegisterMode] = useState(false);
@@ -27,14 +28,8 @@ const Login = () => {
 
     const handleLogin = async () => {
         try {
-            const response = await axios.get("http://localhost:8080/member/login", {
-                params: {
-                    email: form.email,
-                    password: form.password,
-                },
-            });
-            console.log("Login erfolgreich:", response.data);
-            setMember(response.data);
+            const member = await UserService.login(form.email, form.password);
+            setMember(member);
             navigate("/dashboard");
         } catch (err) {
             setError("Falsche Anmeldeinformationen");
@@ -43,7 +38,7 @@ const Login = () => {
 
     const handleRegister = async () => {
         try {
-            const response = await axios.post("http://localhost:8080/member/register", {
+            const member = await UserService.register({
                 firstName: form.firstName,
                 lastName: form.lastName,
                 email: form.email,
@@ -51,8 +46,7 @@ const Login = () => {
                 phone: form.phone,
                 weight: parseInt(form.weight, 10),
             });
-            console.log("Registrierung erfolgreich:", response.data);
-            setMember(response.data);
+            setMember(member);
             navigate("/dashboard");
         } catch (err) {
             setError("Registrierung fehlgeschlagen");

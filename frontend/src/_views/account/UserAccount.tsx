@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useMemberContext } from "../../_common/context/MemberContext";
 import axios from "axios";
 import SaveIcon from '@mui/icons-material/Save';
+import {UserService} from "../../_components/services/UserService";
 
 const UserAccount = () => {
     const { member, setMember } = useMemberContext();
@@ -22,39 +23,18 @@ const UserAccount = () => {
     const handleSave = async () => {
         if (!member) return;
 
-        const updatedMember = {
-            memberId: member.memberId,
-            ...formData,
-        };
-
-        console.log("Updated member:", updatedMember);
-
         try {
-            const response = await axios.put(
-                `http://localhost:8080/member/${member.memberId}`,
-                updatedMember,
-                {
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                }
+            const updatedMember = await UserService.updateMember(
+                member.memberId,
+                formData
             );
-
-            setMember(response.data);
+            setMember(updatedMember);
             alert("Daten erfolgreich gespeichert!");
-        } catch (error: any) {
-            if (error.response) {
-                console.error("Fehler vom Server:", error.response.data);
-                alert("Fehler vom Server: " + JSON.stringify(error.response.data));
-            } else if (error.request) {
-                console.error("Keine Antwort:", error.request);
-                alert("Keine Antwort vom Server erhalten.");
-            } else {
-                console.error("Unbekannter Fehler:", error.message);
-                alert("Fehler: " + error.message);
-            }
+        } catch (error) {
+            alert("Fehler beim Speichern: " + (error as Error).message);
         }
     };
+
 
     return (
         <div className="container mt-4">

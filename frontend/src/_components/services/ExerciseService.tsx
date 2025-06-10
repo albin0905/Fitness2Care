@@ -15,6 +15,10 @@ export class ExerciseService {
         const response = await axios.put<IExercise>(`http://localhost:8080/exercise/${id}`, exercise);
         return response.data;
     }
+    static async getExerciseById(id: number): Promise<IExercise> {
+        const response = await axios.get<IExercise>(`http://localhost:8080/exercise/${id}`);
+        return response.data;
+    }
 
     static async deleteExercise(id: number): Promise<void> {
         await axios.delete(`http://localhost:8080/exercise/${id}`);

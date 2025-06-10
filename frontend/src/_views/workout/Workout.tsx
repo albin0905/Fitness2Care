@@ -1,31 +1,25 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import AddIcon from '@mui/icons-material/Add';
-import CloseIcon from '@mui/icons-material/Close';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import CancelIcon from '@mui/icons-material/Cancel';
-import SaveIcon from '@mui/icons-material/Save';
+import {WorkoutService} from "../../_components/services/WorkoutService";
 
 const Workout = () => {
     const [workouts, setWorkouts] = useState<IWorkout[]>([]);
     const navigate = useNavigate();
 
-    useEffect(() => {
-        axios.get('http://localhost:8080/workout/workouts')
-            .then((res) => {
-                setWorkouts(res.data);
-            })
-            .catch((err) => {
-                console.error('Fehler beim Laden der Workouts:', err);
-            });
-    }, []);
-
-    const calculateTotalCalories = (exercises: IExercise[] = []) => {
-        return exercises.reduce((sum, ex) => sum + (ex.kcal || 0), 0);
+    const fetchWorkouts = async () => {
+        try {
+            const data = await WorkoutService.getAllWorkouts();
+            setWorkouts(data);
+        } catch (error) {
+            console.error('Fehler beim Laden der Workouts:', error);
+        }
     };
+    useEffect(() => {
+        fetchWorkouts();
+    }, []);
 
     const handleDelete = async (workoutId: number, e: React.MouseEvent) => {
         e.stopPropagation();
@@ -33,7 +27,7 @@ const Workout = () => {
         if (!confirmDelete) return;
 
         try {
-            await axios.delete(`http://localhost:8080/workout/${workoutId}`);
+            await WorkoutService.deleteWorkout(workoutId);
             setWorkouts(workouts.filter(w => w.workoutId !== workoutId));
             alert("Workout gelöscht!");
         } catch (error) {
@@ -72,7 +66,7 @@ const Workout = () => {
                     >
                         <td>{workout.workoutName}</td>
                         <td>{workout.time}</td>
-                        <td>{calculateTotalCalories(workout.exercises)} kcal</td>
+                        <td>{WorkoutService.calculateTotalCalories(workout.exercises)} kcal</td>
                         <td>{workout.description}</td>
                         <td>
                             <button

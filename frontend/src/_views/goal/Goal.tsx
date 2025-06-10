@@ -9,35 +9,20 @@ import AddIcon from '@mui/icons-material/Add';
 import CancelIcon from '@mui/icons-material/Cancel';
 import SaveIcon from '@mui/icons-material/Save';
 import { Bar } from 'react-chartjs-2';
-import {
-    Chart as ChartJS,
-    CategoryScale,
-    LinearScale,
-    BarElement,
-    Title,
-    Tooltip,
-    Legend,
-} from 'chart.js';
+import {Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend,} from 'chart.js';
 
-ChartJS.register(
-    CategoryScale,
-    LinearScale,
-    BarElement,
-    Title,
-    Tooltip,
-    Legend
-);
+ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 const Goal = () => {
     const { member } = useMemberContext();
     const [goals, setGoals] = useState<IGoal[]>([]);
     const [selectedGoal, setSelectedGoal] = useState<IGoal | null>(null);
-    const [workouts, setWorkouts] = useState<IWorkout[]>([]);
-    const [error, setError] = useState<string | null>(null);
+
     const [showWorkoutSelection, setShowWorkoutSelection] = useState(false);
-    const [successMessage, setSuccessMessage] = useState(false);
     const [showModal, setShowModal] = useState(false);
     const [showEditModal, setShowEditModal] = useState(false);
+
+    const [workouts, setWorkouts] = useState<IWorkout[]>([]);
     const [newGoal, setNewGoal] = useState({ goalName: "", kcal: 0, date: "" });
     const [editGoal, setEditGoal] = useState<IGoal | null>(null);
 
@@ -51,7 +36,6 @@ const Goal = () => {
                 setGoals(goalsRes);
                 setWorkouts(workoutsRes);
             } catch (err) {
-                setError("Fehler beim Laden der Daten.");
                 console.error(err);
             }
         }
@@ -72,11 +56,9 @@ const Goal = () => {
 
             setSelectedGoal(updatedGoal);
             fetchData();
-            setSuccessMessage(true);
             setShowWorkoutSelection(false);
         } catch (err: any) {
             console.error(err);
-            setError(`Fehler: ${err.response?.data?.message || err.message}`);
         }
     };
 
@@ -96,9 +78,6 @@ const Goal = () => {
             if (err.response) {
                 console.error("Response data:", err.response.data);
                 console.error("Response status:", err.response.status);
-                setError(`Fehler: ${err.response.data?.message || err.message}`);
-            } else {
-                setError(`Fehler: ${err.message}`);
             }
         }
     };
@@ -121,7 +100,6 @@ const Goal = () => {
             setNewGoal({ goalName: "", kcal: 0, date: "" });
         } catch (err) {
             console.error("Fehler beim Erstellen des Ziels:", err);
-            setError("Ziel konnte nicht erstellt werden.");
         }
     };
 
@@ -143,7 +121,6 @@ const Goal = () => {
             setEditGoal(null);
         } catch (err) {
             console.error("Fehler beim Aktualisieren des Ziels:", err);
-            setError("Ziel konnte nicht aktualisiert werden.");
         }
     };
 
@@ -160,7 +137,6 @@ const Goal = () => {
             }
         } catch (err) {
             console.error("Fehler beim Löschen des Ziels:", err);
-            setError("Ziel konnte nicht gelöscht werden.");
         }
     };
 
@@ -237,7 +213,6 @@ const Goal = () => {
     return (
         <div className="container mt-4">
             <h2>Meine Ziele</h2>
-            {error && <p className="text-danger">{error}</p>}
 
             <div className="row">
                 <div className="col-md-6 mb-4">
@@ -264,7 +239,6 @@ const Goal = () => {
                                             onClick={() => {
                                                 setSelectedGoal(goal);
                                                 setShowWorkoutSelection(false);
-                                                setSuccessMessage(false);
                                             }}
                                             style={{ cursor: "pointer" }}
                                         >
@@ -312,17 +286,7 @@ const Goal = () => {
                                 : "Workouts auswählen"}
                         </div>
                         <div className="card-body">
-                            {successMessage ? (
-                                <div className="text-center">
-                                    <p className="text-success">Erfolgreich eingefügt!</p>
-                                    <button
-                                        className="btn btn-primary"
-                                        onClick={() => setSuccessMessage(false)}
-                                    >
-                                        OK
-                                    </button>
-                                </div>
-                            ) : selectedGoal ? (
+                            {selectedGoal ? (
                                 <>
                                     <h5>Zugeordnete Workouts:</h5>
                                     {selectedGoal.workouts?.length > 0 ? (

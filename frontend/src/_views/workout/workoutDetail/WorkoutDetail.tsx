@@ -13,21 +13,16 @@ import SaveIcon from '@mui/icons-material/Save';
 const WorkoutDetail = () => {
     const { workoutId } = useParams<{ workoutId: string }>();
     const [workout, setWorkout] = useState<IWorkout | null>(null);
+
     const [allExercises, setAllExercises] = useState<IExercise[]>([]);
     const [editMode, setEditMode] = useState<boolean>(false);
     const [selectedExercises, setSelectedExercises] = useState<number[]>([]);
     const [showExerciseModal, setShowExerciseModal] = useState<boolean>(false);
     const [currentExercise, setCurrentExercise] = useState<IExercise | null>(null);
-    const [newExercise, setNewExercise] = useState<Omit<IExercise, 'exerciseId'>>({
-        exerciseName: '',
-        bodyPart: '',
-        imageURL: '',
-        exerciseLevel: '',
-        description: '',
-        kcal: 0
-    });
+    const [newExercise, setNewExercise] = useState<Omit<IExercise, 'exerciseId'>>({exerciseName: '', bodyPart: '', imageURL: '', exerciseLevel: '', description: '', kcal: 0});
     const [showDetailModal, setShowDetailModal] = useState<boolean>(false);
     const [detailExercise, setDetailExercise] = useState<IExercise | null>(null);
+
     const navigate = useNavigate();
 
     const calculateTotalCalories = () => {
@@ -190,7 +185,7 @@ const WorkoutDetail = () => {
                 </div>
 
                 {editMode && (
-                    <div className="alert alert-info mb-0">
+                    <div className="">
                         Gesamtkalorien: <strong>{calculateTotalCalories()} kcal</strong>
                     </div>
                 )}

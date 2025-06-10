@@ -1,14 +1,22 @@
 import React, { useEffect, useState } from 'react';
+import { ExerciseService } from '../../_components/services/ExerciseService';
 
 const Exercise = () => {
     const [exercises, setExercises] = useState<IExercise[]>([]);
 
+    const loadExercises = async () => {
+        try {
+            const data = await ExerciseService.getAllExercises();
+            setExercises(data);
+        } catch (err) {
+            console.error("Error loading exercises:", err);
+        }
+    };
+
     useEffect(() => {
-        fetch('http://localhost:8080/exercise/exercises')
-            .then(res => res.json())
-            .then(data => setExercises(data))
-            .catch(err => console.error("Fehler beim Laden der Exercises:", err));
+        loadExercises();
     }, []);
+
 
     return (
         <div>

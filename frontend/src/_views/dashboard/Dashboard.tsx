@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import { useMemberContext } from "../../_common/context/MemberContext";
 import { IGoal } from "../../_common/models/IGoal";
 import { Bar } from 'react-chartjs-2';
@@ -26,49 +26,46 @@ ChartJS.register(
 
 const Dashboard = () => {
     const { member } = useMemberContext();
-    const [latestGoal, setLatestGoal] = React.useState<IGoal | null>(null);
-    const [loading, setLoading] = React.useState(true);
-    const [goalStats, setGoalStats] = React.useState<any>(null);
+    const [latestGoal, setLatestGoal] = useState<IGoal | null>(null);
+    const [goalStats, setGoalStats] = useState<any>(null);
     const [calorieStats, setCalorieStats] = React.useState<any>(null);
 
-    const { language, setLanguage, texts } = useLanguage();
+    const { texts } = useLanguage();
 
-    React.useEffect(() => {
-        const fetchData = async () => {
-            if (member) {
-                try {
-                    const today = new Date().toISOString().split("T")[0];
-                    const goal = await CalorieTrackerService.getCurrentGoal(member.memberId, today);
-                    setLatestGoal(goal);
+    const fetchData = async () => {
+        if (member) {
+            try {
+                const today = new Date().toISOString().split("T")[0];
+                const goal = await CalorieTrackerService.getCurrentGoal(member.memberId, today);
+                setLatestGoal(goal);
 
-                    setGoalStats({
-                        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-                        datasets: [{
-                            label: 'Workout Minutes',
-                            data: [265, 259, 280, 381, 156, 355],
-                            backgroundColor: 'rgba(75, 192, 192, 0.6)',
-                        }]
-                    });
+                setGoalStats({
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                    datasets: [{
+                        label: 'Workout Minutes',
+                        data: [265, 259, 280, 381, 156, 355],
+                        backgroundColor: 'rgba(75, 192, 192, 0.6)',
+                    }]
+                });
 
-                    setCalorieStats([
-                        { name: 'Day 1', date: '2025-06-05', consumed: 1400 },
-                        { name: 'Day 2', date: '2025-06-06', consumed: 1300 },
-                        { name: 'Day 3', date: '2025-06-07', consumed: 1600 },
-                        { name: 'Day 4', date: '2025-06-08', consumed: 1200 },
-                        { name: 'Day 5', date: '2025-06-09', consumed: 1500 },
-                    ]);
-                } catch (error) {
-                    console.error("Error fetching data:", error);
-                } finally {
-                    setLoading(false);
-                }
+                setCalorieStats([
+                    { name: 'Day 1', date: '2025-06-05', consumed: 1400 },
+                    { name: 'Day 2', date: '2025-06-06', consumed: 1300 },
+                    { name: 'Day 3', date: '2025-06-07', consumed: 1600 },
+                    { name: 'Day 4', date: '2025-06-08', consumed: 1200 },
+                    { name: 'Day 5', date: '2025-06-09', consumed: 1500 },
+                ]);
+            } catch (error) {
+                console.error("Error fetching data:", error);
             }
-        };
+        }
+    };
 
+    useEffect(() => {
         fetchData();
     }, [member]);
 
-    if (loading) {
+    if (!member || !goalStats || !calorieStats) {
         return <div className="container mt-4">Loading...</div>;
     }
 
@@ -102,20 +99,16 @@ const Dashboard = () => {
                             <h3>{texts.goalStatistics}</h3>
                         </div>
                         <div className="card-body">
-                            {goalStats ? (
-                                <Bar
-                                    data={goalStats}
-                                    options={{
-                                        responsive: true,
-                                        plugins: {
-                                            legend: { position: 'top' },
-                                            title: { display: true, text: 'Workout Minuten' }
-                                        }
-                                    }}
-                                />
-                            ) : (
-                                <p>Keine Daten verfügbar</p>
-                            )}
+                            <Bar
+                                data={goalStats}
+                                options={{
+                                    responsive: true,
+                                    plugins: {
+                                        legend: { position: 'top' },
+                                        title: { display: true, text: 'Workout Minuten' }
+                                    }
+                                }}
+                            />
                         </div>
                     </div>
                 </div>
@@ -126,36 +119,32 @@ const Dashboard = () => {
                             <h3>{texts.calorieTracker}</h3>
                         </div>
                         <div className="card-body">
-                            {calorieStats ? (
-                                <LineChart
-                                    width={500}
-                                    height={300}
-                                    data={calorieStats}
-                                    margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-                                >
-                                    <CartesianGrid strokeDasharray="3 3" />
-                                    <XAxis dataKey="date" />
-                                    <YAxis />
-                                    <Tooltip />
-                                    <Legend />
-                                    <Line
-                                        type="monotone"
-                                        dataKey="consumed"
-                                        name="Konsumierte Kalorien"
-                                        stroke="#8884d8"
+                            <LineChart
+                                width={500}
+                                height={300}
+                                data={calorieStats}
+                                margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+                            >
+                                <CartesianGrid strokeDasharray="3 3" />
+                                <XAxis dataKey="date" />
+                                <YAxis />
+                                <Tooltip />
+                                <Legend />
+                                <Line
+                                    type="monotone"
+                                    dataKey="consumed"
+                                    name="Konsumierte Kalorien"
+                                    stroke="#8884d8"
+                                />
+                                {latestGoal && (
+                                    <ReferenceLine
+                                        y={latestGoal.kcal}
+                                        label="Ziel"
+                                        stroke="red"
+                                        strokeDasharray="3 3"
                                     />
-                                    {latestGoal && (
-                                        <ReferenceLine
-                                            y={latestGoal.kcal}
-                                            label="Ziel"
-                                            stroke="red"
-                                            strokeDasharray="3 3"
-                                        />
-                                    )}
-                                </LineChart>
-                            ) : (
-                                <p>Keine Daten verfügbar</p>
-                            )}
+                                )}
+                            </LineChart>
                         </div>
                     </div>
                 </div>

@@ -1,15 +1,25 @@
 import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import axios from 'axios';
+import {ExerciseService} from "../../../_components/services/ExerciseService";
 
 const ExerciseDetail = () => {
     const { id } = useParams();
     const [exercise, setExercise] = useState<IExercise | null>(null);
 
+    const fetchExercise = async () => {
+        try {
+            if (!id) {
+                throw new Error('Exercise ID is missing');
+            }
+            const exerciseData = await ExerciseService.getExerciseById(parseInt(id));
+            setExercise(exerciseData);
+        } catch (err) {
+            console.error("Error loading exercise:", err);
+        }
+    };
+
     useEffect(() => {
-        axios.get(`http://localhost:8080/exercise/${id}`)
-            .then(res => setExercise(res.data))
-            .catch(err => console.error("Fehler beim Laden:", err));
+        fetchExercise();
     }, [id]);
 
     if (!exercise) return <p>Lade Übung...</p>;
