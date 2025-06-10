@@ -12,7 +12,6 @@ const CalorieTracker = () => {
     const [search, setSearch] = useState("");
     const [page, setPage] = useState(0);
     const [goal, setGoal] = useState<IGoal | null>(null);
-    const [selectedProduct, setSelectedProduct] = useState<IProduct | null>(null);
     const [gramInputs, setGramInputs] = useState<{[barcode: string]: number}>({});
     const [showExceedModal, setShowExceedModal] = useState(false);
     const { member } = useMemberContext();
@@ -32,16 +31,6 @@ const CalorieTracker = () => {
 
     useEffect(() => {
         fetchCurrentGoal();
-
-        const handleGoalChange = () => {
-            fetchCurrentGoal();
-        };
-
-        window.addEventListener('goalChanged', handleGoalChange);
-
-        return () => {
-            window.removeEventListener('goalChanged', handleGoalChange);
-        };
     }, [userId]);
 
     const fetchProducts = async () => {
@@ -190,22 +179,12 @@ const CalorieTracker = () => {
                 </Modal.Footer>
             </Modal>
 
-            {/* Nur EINMAL das Ziel anzeigen - das Duplikat wurde entfernt */}
             {goal ? (
-                <div style={{
-                    marginBottom: "20px",
-                    padding: "15px",
-                    borderRadius: "8px",
-                    backgroundColor: "#f8f9fa",
-                    boxShadow: "0 2px 4px rgba(0,0,0,0.1)"
-                }}>
+                <div style={{marginBottom: "20px", padding: "15px", borderRadius: "8px", backgroundColor: "#f8f9fa", boxShadow: "0 2px 4px rgba(0,0,0,0.1)"}}>
                     <p><strong>Name:</strong> {goal.goalName}</p>
                     <p><strong>Datum:</strong> {new Date(goal.date).toLocaleDateString()}</p>
                     <p><strong>Noch zur Verfügung stehende Kalorien:</strong>
-                        <span style={{
-                            fontWeight: "bold",
-                            color: goal.kcal < 0 ? "red" : "inherit"
-                        }}>
+                        <span style={{fontWeight: "bold", color: goal.kcal < 0 ? "red" : "inherit"}}>
                             {goal.kcal} kcal
                         </span>
                     </p>
@@ -215,37 +194,23 @@ const CalorieTracker = () => {
             )}
 
             <div style={{ marginBottom: "20px" }}>
-                <input
-                    type="text"
-                    placeholder="🔍 Suche Produkt..."
-                    value={search}
-                    onChange={(e) => setSearch(e.target.value)}
-                    style={{
-                        width: "100%",
-                        padding: "10px",
-                        borderRadius: "4px",
-                        border: "1px solid #ddd",
-                        fontSize: "16px"
-                    }}
+                <input type="text" placeholder="🔍 Suche Produkt..." value={search} onChange={(e) => setSearch(e.target.value)}
+                    style={{width: "100%", padding: "10px", borderRadius: "4px", border: "1px solid #ddd", fontSize: "16px"}}
                 />
             </div>
 
             {products.length > 0 && (
                 <div style={{ overflowX: "auto", marginBottom: "20px" }}>
-                    <table style={{
-                        width: "100%",
-                        borderCollapse: "collapse",
-                        boxShadow: "0 1px 3px rgba(0,0,0,0.1)"
-                    }}>
+                    <table style={{width: "100%", borderCollapse: "collapse", boxShadow: "0 1px 3px rgba(0,0,0,0.1)"}}>
                         <thead>
-                        <tr style={{ backgroundColor: "#2c3e50", color: "white" }}>
-                            <th style={{ padding: "12px", textAlign: "left" }}>Barcode</th>
-                            <th style={{ padding: "12px", textAlign: "left" }}>Produktname</th>
-                            <th style={{ padding: "12px", textAlign: "left" }}>kcal / 100g</th>
-                            <th style={{ padding: "12px", textAlign: "left" }}>Zutaten</th>
-                            <th style={{ padding: "12px", textAlign: "left" }}>Gramm</th>
-                            <th style={{ padding: "12px", textAlign: "left" }}>Aktion</th>
-                        </tr>
+                            <tr style={{ backgroundColor: "#2c3e50", color: "white" }}>
+                                <th style={{ padding: "12px", textAlign: "left" }}>Barcode</th>
+                                <th style={{ padding: "12px", textAlign: "left" }}>Produktname</th>
+                                <th style={{ padding: "12px", textAlign: "left" }}>kcal / 100g</th>
+                                <th style={{ padding: "12px", textAlign: "left" }}>Zutaten</th>
+                                <th style={{ padding: "12px", textAlign: "left" }}>Gramm</th>
+                                <th style={{ padding: "12px", textAlign: "left" }}>Aktion</th>
+                            </tr>
                         </thead>
                         <tbody>
                         {products.slice(startIndex, endIndex).map((product: IProduct) => (
@@ -255,39 +220,14 @@ const CalorieTracker = () => {
                                 <td style={{ padding: "10px" }}>{product.kcal_100g}</td>
                                 <td style={{ padding: "10px" }}>{product.ingredients}</td>
                                 <td style={{ padding: "10px" }}>
-                                    <input
-                                        type="number"
-                                        value={gramInputs[product.barcode] || ""}
-                                        onChange={(e) => handleGramInputChange(String(product.barcode), e.target.value)}
-                                        placeholder="100"
-                                        min="1"
-                                        style={{
-                                            width: "60px",
-                                            padding: "5px",
-                                            borderRadius: "4px",
-                                            border: "1px solid #ddd"
-                                        }}
+                                    <input type="number" value={gramInputs[product.barcode] || ""} onChange={(e) => handleGramInputChange(String(product.barcode), e.target.value)}
+                                        placeholder="100" min="1" style={{width: "60px", padding: "5px", borderRadius: "4px", border: "1px solid #ddd"}}
                                     />
                                 </td>
-                                <td style={{
-                                    padding: "10px",
-                                    textAlign: "center",
-                                    display: "flex",
-                                    justifyContent: "center",
-                                    alignItems: "center",
-                                    height: "100%"
-                                }}>
-                                    <button
-                                        className="btn btn-sm btn-outline-success"
-                                        style={{
-                                            display: "flex",
-                                            justifyContent: "center",
-                                            alignItems: "center",
-                                            padding: "8px",
-                                            margin: "0 auto"
-                                        }}
+                                <td style={{padding: "10px", textAlign: "center", display: "flex", justifyContent: "center", alignItems: "center", height: "100%"}}>
+                                    <button className="btn btn-sm btn-outline-success"
+                                        style={{display: "flex", justifyContent: "center", alignItems: "center", padding: "8px", margin: "0 auto"}}
                                         onClick={() => {
-                                            setSelectedProduct(product);
                                             addCaloriesToGoal(product);
                                         }}
                                     >
@@ -302,43 +242,19 @@ const CalorieTracker = () => {
             )}
 
             {products.length > productsPerPage && (
-                <div style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    marginBottom: "20px"
-                }}>
-                    <button
-                        onClick={() => setPage((p) => Math.max(p - 1, 0))}
-                        disabled={page === 0}
-                        style={{
-                            padding: "8px 16px",
-                            margin: "0 5px",
-                            backgroundColor: page === 0 ? "#bdc3c7" : "#3498db",
-                            color: "white",
-                            border: "none",
-                            borderRadius: "4px",
-                            cursor: page === 0 ? "not-allowed" : "pointer"
-                        }}
-                    >
+                <div style={{display: "flex", justifyContent: "center", alignItems: "center", marginBottom: "20px"}}>
+                    <button onClick={() => setPage((p) => Math.max(p - 1, 0))} disabled={page === 0}
+                        style={{padding: "8px 16px", margin: "0 5px", backgroundColor: page === 0 ? "#bdc3c7" : "#3498db",
+                            color: "white", border: "none", borderRadius: "4px", cursor: page === 0 ? "not-allowed" : "pointer"}}>
                         ◀️ Zurück
                     </button>
                     <span style={{ margin: "0 10px" }}>
                         Seite {page + 1} von {Math.ceil(products.length / productsPerPage)}
                     </span>
-                    <button
-                        onClick={() => setPage((p) => Math.min(p + 1, Math.ceil(products.length / productsPerPage) - 1))}
+                    <button onClick={() => setPage((p) => Math.min(p + 1, Math.ceil(products.length / productsPerPage) - 1))}
                         disabled={startIndex + productsPerPage >= products.length}
-                        style={{
-                            padding: "8px 16px",
-                            margin: "0 5px",
-                            backgroundColor: startIndex + productsPerPage >= products.length ? "#bdc3c7" : "#3498db",
-                            color: "white",
-                            border: "none",
-                            borderRadius: "4px",
-                            cursor: startIndex + productsPerPage >= products.length ? "not-allowed" : "pointer"
-                        }}
-                    >
+                        style={{padding: "8px 16px", margin: "0 5px", backgroundColor: startIndex + productsPerPage >= products.length ? "#bdc3c7" : "#3498db",
+                            color: "white", border: "none", borderRadius: "4px", cursor: startIndex + productsPerPage >= products.length ? "not-allowed" : "pointer"}}>
                         Weiter ▶️
                     </button>
                 </div>

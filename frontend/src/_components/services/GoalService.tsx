@@ -12,7 +12,7 @@ export class GoalService {
         const response = await axios.post<IGoal>('http://localhost:8080/goal/addGoal', {
             ...goalData,
             userId: memberId,
-            workouts: [] // Standardmäßig leeres Array für Workouts
+            workouts: []
         });
         return response.data;
     }
