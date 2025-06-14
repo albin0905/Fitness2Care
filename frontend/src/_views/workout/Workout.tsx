@@ -4,6 +4,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import AddIcon from '@mui/icons-material/Add';
 import {WorkoutService} from "../../_components/services/WorkoutService";
+import {IWorkout} from "../../_common/models/IWorkout";
 
 const Workout = () => {
     const [workouts, setWorkouts] = useState<IWorkout[]>([]);

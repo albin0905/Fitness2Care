@@ -1,6 +1,7 @@
 import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import {ExerciseService} from "../../../_components/services/ExerciseService";
+import {IExercise} from "../../../_common/models/IExercise";
 
 const ExerciseDetail = () => {
     const { id } = useParams();

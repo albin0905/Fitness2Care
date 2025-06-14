@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { ExerciseService } from '../../_components/services/ExerciseService';
+import {IExercise} from "../../_common/models/IExercise";
 
 const Exercise = () => {
     const [exercises, setExercises] = useState<IExercise[]>([]);

@@ -9,6 +9,8 @@ import CloseIcon from '@mui/icons-material/Close';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import CancelIcon from '@mui/icons-material/Cancel';
 import SaveIcon from '@mui/icons-material/Save';
+import {IExercise} from "../../../_common/models/IExercise";
+import {IWorkout} from "../../../_common/models/IWorkout";
 
 const WorkoutDetail = () => {
     const { workoutId } = useParams<{ workoutId: string }>();

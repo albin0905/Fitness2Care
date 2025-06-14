@@ -1,4 +1,4 @@
-interface IWorkout{
+export interface IWorkout{
     workoutId: number;
     workoutName: string;
     time: number;
