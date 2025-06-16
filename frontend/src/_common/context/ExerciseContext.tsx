@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
+import {IExercise} from "../models/IExercise";
 
 interface ExerciseContextProps {
     selectedExercise: IExercise | null;

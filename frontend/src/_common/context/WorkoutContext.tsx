@@ -1,4 +1,5 @@
 import React, { createContext, ReactNode, useContext, useState } from "react";
+import {IWorkout} from "../models/IWorkout";
 
 
 export interface WorkoutContextProps {

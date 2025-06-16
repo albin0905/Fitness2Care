@@ -1,4 +1,5 @@
 import axios from 'axios';
+import {IExercise} from "../../_common/models/IExercise";
 
 export class ExerciseService {
     static async getAllExercises(): Promise<IExercise[]> {

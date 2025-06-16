@@ -1,4 +1,6 @@
 import axios from 'axios';
+import { IExercise } from '../../_common/models/IExercise';
+import { IWorkout } from '../../_common/models/IWorkout';
 
 export class WorkoutService {
     static async getAllWorkouts(): Promise<IWorkout[]> {

@@ -1,5 +1,6 @@
 import axios from 'axios';
 import {IGoal} from "../../_common/models/IGoal";
+import {IWorkout} from "../../_common/models/IWorkout";
 
 
 export class GoalService {
