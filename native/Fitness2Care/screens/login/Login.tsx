@@ -12,8 +12,8 @@ import {
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { useMemberContext } from '../../../../frontend/src/_common/context/MemberContext';
-import { UserService } from '../../../../frontend/src/_components/services/UserService';
+import { useMemberContext } from '../../_common/context/MemberContext';
+import { UserService } from '../../_components/services/UserService';
 
 type RootStackParamList = {
     Dashboard: undefined;
@@ -80,10 +80,6 @@ const Login = () => {
     return (
         <TouchableWithoutFeedback onPress={dismissKeyboard}>
             <View style={styles.container}>
-                <ImageBackground
-                    source={require('../../assets/auth-background.jpg')}
-                    style={styles.backgroundImage}
-                >
                     <View style={styles.authContainer}>
                         <View style={styles.card}>
                             <Text style={styles.title}>
@@ -195,7 +191,6 @@ const Login = () => {
                             </TouchableOpacity>
                         </View>
                     </View>
-                </ImageBackground>
             </View>
         </TouchableWithoutFeedback>
     );

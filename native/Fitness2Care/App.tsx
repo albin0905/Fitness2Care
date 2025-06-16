@@ -2,9 +2,9 @@ import { StatusBar } from 'expo-status-bar';
 import { StyleSheet } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { MemberProvider } from '../../frontend/src/_common/context/MemberContext';
-import { LanguageProvider } from '../../frontend/src/_common/context/LanguageContext';
-import { WorkoutProvider } from '../../frontend/src/_common/context/WorkoutContext';
+import { MemberProvider } from '_common/context/MemberContext';
+import { LanguageProvider } from '_common/context/LanguageContext';
+import { WorkoutProvider } from '_common/context/WorkoutContext';
 import Layout from '@screens/layout/Layout';
 import Dashboard from '@screens/dashboard/Dashboard';
 import Workout from '@screens/workout/Workout';
@@ -15,26 +15,12 @@ import UserAccount from '@screens/account/UserAccount';
 import Exercise from '@screens/exercise/Exercise';
 import WorkoutDetail from '@screens/workout/WorkoutDetail';
 import WorkoutManager from '@screens/workout/WorkoutManager';
-
-// Typdefinition bleibt bestehen für die Verwendung in Komponenten
-export type RootStackParamList = {
-  Login: undefined;
-  Main: undefined;
-  Dashboard: undefined;
-  Workout: undefined;
-  Progress: undefined;
-  Goal: undefined;
-  CalorieTracker: undefined;
-  Account: undefined;
-  WorkoutManager: undefined;
-  WorkoutDetail: { workoutId: string; workoutName?: string };
-  Exercise: undefined;
-};
+import { IRootStackParamList } from '_common/models/IRootStackParamList';
 
 const Stack = createNativeStackNavigator();
 
 type WorkoutDetailRouteProp = {
-  params: RootStackParamList['WorkoutDetail'];
+  params: IRootStackParamList['WorkoutDetail'];
 };
 
 function App() {

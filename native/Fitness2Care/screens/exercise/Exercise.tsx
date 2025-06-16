@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, FlatList, Image, ScrollView } from 'react-native';
-import { ExerciseService } from '../../../../frontend/src/_components/services/ExerciseService';
-import { IExercise } from '../../../../frontend/src/_common/models/IExercise';
+import { ExerciseService } from '../../_components/services/ExerciseService';
+import { IExercise } from '../../_common/models/IExercise';
 
 const Exercise = () => {
     const [exercises, setExercises] = useState<IExercise[]>([]);

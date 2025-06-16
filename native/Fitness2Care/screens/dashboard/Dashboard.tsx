@@ -1,15 +1,23 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
-import { useMemberContext } from '../../../../frontend/src/_common/context/MemberContext';
-import { IGoal } from '../../../../frontend/src/_common/models/IGoal';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { useMemberContext } from '../../_common/context/MemberContext';
+import { IGoal } from '../../_common/models/IGoal';
 import { BarChart } from 'react-native-chart-kit';
 import { Dimensions } from 'react-native';
 import { LineChart } from 'react-native-chart-kit';
-import { CalorieTrackerService } from '../../../../frontend/src/_components/services/CalorieTrackerService';
-import { useLanguage } from '../../../../frontend/src/_common/context/LanguageContext';
-import Card from '../../components/Card';
+import { CalorieTrackerService } from '../../_components/services/CalorieTrackerService';
+import { useLanguage } from '../../_common/context/LanguageContext';
+import Card from '../../_components/Card';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { IRootStackParamList } from '../../_common/models/IRootStackParamList';
 
-const Dashboard = () => {
+type DashboardScreenNavigationProp = StackNavigationProp<IRootStackParamList, 'Dashboard'>;
+
+interface Props {
+    navigation: DashboardScreenNavigationProp;
+}
+
+const Dashboard: React.FC<Props> = ({ navigation }) => {
     const { member } = useMemberContext();
     const [latestGoal, setLatestGoal] = useState<IGoal | null>(null);
     const [goalStats, setGoalStats] = useState<any>(null);
@@ -61,6 +69,29 @@ const Dashboard = () => {
 
     return (
         <ScrollView style={styles.container}>
+            <View style={styles.navContainer}>
+                <TouchableOpacity
+                    style={styles.navButton}
+                    onPress={() => navigation.navigate('Goal')}
+                >
+                    <Text style={styles.navButtonText}>Goals</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                    style={styles.navButton}
+                    onPress={() => navigation.navigate('CalorieTracker')}
+                >
+                    <Text style={styles.navButtonText}>Calorie Tracker</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                    style={styles.navButton}
+                    onPress={() => navigation.navigate('Account')}
+                >
+                    <Text style={styles.navButtonText}>My Account</Text>
+                </TouchableOpacity>
+            </View>
+
             <Card title={texts.lastGoal}>
                 {latestGoal ? (
                     <View>
@@ -165,13 +196,31 @@ const styles = StyleSheet.create({
         flex: 1,
         padding: 16,
     },
+    navContainer: {
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        justifyContent: 'space-between',
+        marginBottom: 16,
+    },
+    navButton: {
+        width: '48%', // Zwei Buttons pro Reihe
+        padding: 12,
+        backgroundColor: '#6200ee',
+        borderRadius: 8,
+        marginBottom: 12,
+        alignItems: 'center',
+    },
+    navButtonText: {
+        color: 'white',
+        fontWeight: 'bold',
+    },
     row: {
         flexDirection: 'row',
         flexWrap: 'wrap',
         justifyContent: 'space-between',
     },
     halfWidth: {
-        width: '100%', // Auf kleinen Bildschirmen volle Breite
+        width: '100%',
     },
     chart: {
         marginVertical: 8,

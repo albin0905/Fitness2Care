@@ -12,18 +12,12 @@ import {
 } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { AxiosError } from 'axios';
-import { IGoal } from "../../../../frontend/src/_common/models/IGoal";
-import { useMemberContext } from "../../../../frontend/src/_common/context/MemberContext";
-import CalorieHistory from "../../components/CalorieHistory";
-import { CalorieTrackerService } from '../../../../frontend/src/_components/services/CalorieTrackerService';
+import { IGoal } from "../../_common/models/IGoal";
+import { useMemberContext } from "../../_common/context/MemberContext";
+import CalorieHistory from "../../_components/CalorieHistory";
+import { CalorieTrackerService } from '../../_components/services/CalorieTrackerService';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
-interface IProduct {
-    barcode: string;
-    productName: string;
-    kcal_100g: number;
-    ingredients: string;
-}
+import { IProduct } from '../../_common/models/IProduct';
 
 const CalorieTracker = () => {
     const [products, setProducts] = useState<IProduct[]>([]);
@@ -165,7 +159,7 @@ const CalorieTracker = () => {
         }
     };
 
-    const handleGramInputChange = (barcode: string, value: string) => {
+    const handleGramInputChange = (barcode: number, value: string) => {
         const numValue = value === "" ? 0 : parseInt(value);
         if (!isNaN(numValue)) {
             setGramInputs(prev => ({
@@ -257,7 +251,7 @@ const CalorieTracker = () => {
             <FlatList
                 data={products.slice(startIndex, endIndex)}
                 renderItem={renderProductItem}
-                keyExtractor={(item) => item.barcode}
+                keyExtractor={(item) => item.barcode.toString()}
                 scrollEnabled={false}
             />
 

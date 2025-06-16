@@ -13,10 +13,10 @@ import {
 } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import { ExerciseService } from '../../../../frontend/src/_components/services/ExerciseService';
-import { WorkoutService } from '../../../../frontend/src/_components/services/WorkoutService';
-import { IExercise } from '../../../../frontend/src/_common/models/IExercise';
-import { IWorkout } from '../../../../frontend/src/_common/models/IWorkout';
+import { ExerciseService } from '../../_components/services/ExerciseService';
+import { WorkoutService } from '../../_components/services/WorkoutService';
+import { IExercise } from '../../_common/models/IExercise';
+import { IWorkout } from '../../_common/models/IWorkout';
 
 const WorkoutDetail = () => {
     const route = useRoute();

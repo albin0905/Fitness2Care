@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import { useMemberContext } from "../../../../frontend/src/_common/context/MemberContext";
+import { useMemberContext } from "../../_common/context/MemberContext";
 import axios from "axios";
 import { MaterialIcons } from "@expo/vector-icons";
-import { UserService } from "../../../../frontend/src/_components/services/UserService";
+import { UserService } from "../../_components/services/UserService";
 import {
     View,
     Text,

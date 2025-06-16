@@ -11,8 +11,8 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import { WorkoutService } from '../../../../frontend/src/_components/services/WorkoutService';
-import { IWorkout } from '../../../../frontend/src/_common/models/IWorkout';
+import { WorkoutService } from '../../_components/services/WorkoutService';
+import { IWorkout } from '../../_common/models/IWorkout';
 
 type RootStackParamList = {
     WorkoutDetails: { workoutId: number };

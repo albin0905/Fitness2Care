@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Image, ActivityIndicator } from 'react-native';
 import { useRoute, RouteProp } from '@react-navigation/native';
-import { ExerciseService } from '../../../../frontend/src/_components/services/ExerciseService';
-import { IExercise } from '../../../../frontend/src/_common/models/IExercise';
+import { ExerciseService } from '../../_components/services/ExerciseService';
+import { IExercise } from '../../_common/models/IExercise';
 
 type RootStackParamList = {
     ExerciseDetail: { id: string };

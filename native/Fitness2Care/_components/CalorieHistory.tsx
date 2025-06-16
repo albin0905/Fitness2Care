@@ -10,9 +10,9 @@ import {
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import { LineChart } from 'react-native-chart-kit';
-import { ICalorieHistoryItem } from '../../../frontend/src/_common/models/ICalorieHistoryItem';
-import { IConsumedItem } from "../../../frontend/src/_common/models/IConsumedItem";
-import { ICalorieHistoryProps } from "../../../frontend/src/_common/models/ICalorieHistoryProps";
+import { ICalorieHistoryItem } from '../_common/models/ICalorieHistoryItem';
+import { IConsumedItem } from "../_common/models/IConsumedItem";
+import { ICalorieHistoryProps } from "../_common/models/ICalorieHistoryProps";
 
 const CalorieHistory: React.FC<ICalorieHistoryProps> = ({ goalId, currentGoal, setGoal }) => {
     const [history, setHistory] = useState<ICalorieHistoryItem[]>([]);

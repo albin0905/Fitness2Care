@@ -11,11 +11,11 @@ import {
     FlatList,
     SectionList
 } from 'react-native';
-import { useMemberContext } from '../../../../frontend/src/_common/context/MemberContext';
-import { GoalService } from '../../../../frontend/src/_components/services/GoalService';
-import { IGoal } from '../../../../frontend/src/_common/models/IGoal';
-import { IWorkout } from '../../../../frontend/src/_common/models/IWorkout';
-import { IExercise } from '../../../../frontend/src/_common/models/IExercise';
+import { useMemberContext } from '../../_common/context/MemberContext';
+import { GoalService } from '../../_components/services/GoalService';
+import { IGoal } from '../../_common/models/IGoal';
+import { IWorkout } from '../../_common/models/IWorkout';
+import { IExercise } from '../../_common/models/IExercise';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { BarChart } from 'react-native-chart-kit';
 import { Dimensions } from 'react-native';

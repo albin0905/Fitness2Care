@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image, ScrollView, Modal } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { useMemberContext } from '../../../../frontend/src/_common/context/MemberContext';
+import { useMemberContext } from '../../_common/context/MemberContext';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import { useLanguage } from '../../../../frontend/src/_common/context/LanguageContext';
+import { useLanguage } from '../../_common/context/LanguageContext';
 
 type RootStackParamList = {
     Dashboard: undefined;
